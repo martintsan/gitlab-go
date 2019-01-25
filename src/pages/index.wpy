@@ -1,0 +1,14 @@
+<style lang='scss'>
+</style>
+<template>
+<view>GitLab Go</view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class IndexPage extends wepy.page {
+  data = {};
+  methods = {};
+  onLoad() {}
+}
+</script>
