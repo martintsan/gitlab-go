@@ -1,0 +1,18 @@
+<script>
+import wepy from 'wepy'
+import ui from '../utils/ui'
+
+export default class Base extends wepy.mixin {
+  loaded() {
+    ui.loaded()
+    this.$apply()
+  }
+
+  showErrorMsg(message) {
+    if (typeof message === 'string') {
+      ui.showErrorMsg(message)
+      this.$apply()
+    }
+  }
+}
+</script>

@@ -2,15 +2,15 @@
 @import 'styles/base';
 </style>
 <script>
-import wepy from 'wepy';
-import 'wepy-async-function';
+import wepy from 'wepy'
+import 'wepy-async-function'
 import i18n from './utils/wxapp-i18n'
 
-import { setStore } from 'wepy-redux';
-import configStore from './store';
+import { setStore } from 'wepy-redux'
+import configStore from './store'
 
-const store = configStore();
-setStore(store);
+const store = configStore()
+setStore(store)
 
 export default class extends wepy.app {
   config = {
@@ -25,17 +25,17 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'white'
     },
     usingComponents: {
-      "van-cell": "./vendors/vant/cell/index",
-      "van-cell-group": "./vendors/vant/cell-group/index",
-      "van-button": "./vendors/vant/button/index",
-      "van-field": "./vendors/vant/field/index"
+      'van-cell': './vendors/vant/cell/index',
+      'van-cell-group': './vendors/vant/cell-group/index',
+      'van-button': './vendors/vant/button/index',
+      'van-field': './vendors/vant/field/index'
     }
-  };
+  }
 
   constructor() {
-    super();
-    this.use('requestfix');
-    this.use('promisify');
+    super()
+    this.use('requestfix')
+    this.use('promisify')
   }
 
   loadLocale() {

@@ -4,6 +4,10 @@
   width: 100%;
   padding: 32rpx;
 
+  .h2 {
+    margin-bottom: 20rpx;
+  }
+
   .tips {
     font-size: 28rpx;
     color: #333333;
@@ -16,19 +20,24 @@
   }
 
   .gitlab-tips {
-    font-size: 28rpx;
-    color: #333333;
+    font-size: 26rpx;
+    color: #2b2b2b;
+
+    .pargh {
+      margin-bottom: 10rpx;
+    }
   }
 
   .form {
-    margin-top: 20rpx;
+    margin-top: 60rpx;
     font-size: 28rpx;
 
     .input-token {
+      min-height: 80rpx;
       border: 1px solid #cccccc;
       border-radius: 8rpx;
       padding: 10rpx 20rpx;
-      font-size: 26rpx;
+      font-size: 30rpx;
       margin-bottom: 20rpx;
     }
 
@@ -37,57 +46,99 @@
     }
   }
 }
+
+.projects-wrapper {
+  padding-right: 0;
+}
 </style>
 <template>
-<view id="index" class="container">
-  <view class="h1">{{ lang.welcome }}</view>
+<view class="container" wx:if="{{ !currentUser || !currentUser.id }}">
+  <view class="h2">{{ lang.welcome }}</view>
   <view class="tips">{{ lang.tips }}</view>
   <view class="show-more" wx:if="{{ guideOff }}" @tap.stop="showGuide">{{ lang.showMore }}</view>
   <view class="gitlab-tips" wx:else>
     <rich-text nodes="{{ lang.gitlabTips }}"></rich-text>
   </view>
   <view class="form">
-    <!-- <input class="input-token" cursor-spacing="20" type="text" bindinput="setToken" placeholder="{{ lang.token }}"></input> -->
-    <van-cell-group>
-      <van-field
-        label="Private Token"
-        left-icon="contact"
-        border="false"
-      />
-    </van-cell-group>
-    <van-button class="login-button" type="primary" plain="true" block="true">Login</van-button>
+    <input class="input-token" cursor-spacing="20" type="text" bindinput="setToken" placeholder="{{ lang.token }}"></input>
+    <van-button class="login-button" type="primary" plain="true" block="true" @tap.stop="login">Login</van-button>
   </view>
+</view>
+<view class="container projects-wrapper" wx:else>
+  <repeat for="{{ projects }}" key="index" index="index" item="item">
+    <projectIndexItem :item.sync="item"></projectIndexItem>
+  </repeat>
 </view>
 </template>
 <script>
-import wepy from 'wepy';
-import BasePage from './base';
+import wepy from 'wepy'
+import BasePage from './base'
+import UsersService from '../services/users'
+import ProjectsService from '../services/projects'
+import ProjectIndexItem from '../components/projectIndexItem'
 
 export default class IndexPage extends BasePage {
   data = {
     guideOff: true,
+    privateToken: '',
+    projects: [],
     ...this.def
-  };
+  }
+
+  components = {
+    projectIndexItem: ProjectIndexItem
+  }
 
   async onLoad() {
-    this.setLang();
+    this.userLogin()
+    this.setLang()
+    if (this.currentUser && this.currentUser.id) {
+      await this.loadData()
+    }
+    this.loaded()
+  }
+
+  async loadData() {
+    let result = await ProjectsService.getUserProjects(this.currentUser.id)
+    if (result.status) {
+      this.projects = result.data
+    }
   }
 
   setLang() {
-    const t = wepy.i18n.translate;
-    this.lang.welcome = t('idx-welcome');
-    this.lang.tips = t('idx-tips');
-    this.lang.showMore = t('idx-show-more');
-    this.lang.gitlabTips = t('idx-gitlab-tips');
-    this.lang.token = t('idx-token');
-    this.$apply();
+    const t = wepy.i18n.translate
+    this.lang.welcome = t('idx-welcome')
+    this.lang.tips = t('idx-tips')
+    this.lang.showMore = t('idx-show-more')
+    this.lang.gitlabTips = t('idx-gitlab-tips')
+    this.lang.token = t('idx-token')
+    this.$apply()
   }
 
   methods = {
     showGuide() {
-      this.guideOff = false;
-      this.$apply();
+      this.guideOff = false
+      this.$apply()
+    },
+    setToken(e) {
+      this.privateToken = e.detail.value
+      this.$apply()
+      console.log(this.privateToken)
+    },
+    async login() {
+      if (this.privateToken) {
+        let result = await UsersService.getUser(this.privateToken)
+        if (result.status) {
+          wepy.setStorageSync('GITLAB_PRIVATE_TOKEN', this.privateToken)
+          wepy.setStorageSync('CURRENT_USER', result.data)
+          this.currentUser = result.data
+          await this.loadData()
+        } else {
+          this.showErrorMsg(result.data.message)
+        }
+        this.loaded()
+      }
     }
-  };
+  }
 }
 </script>

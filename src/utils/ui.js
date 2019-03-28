@@ -18,4 +18,12 @@ export default class ui {
       wepy.hideLoading();
     }
   }
+
+  static showErrorMsg(message) {
+    wepy.showModal({
+      title: '错误消息 / Error Msg',
+      content: message,
+      showCancel: false
+    })
+  }
 }

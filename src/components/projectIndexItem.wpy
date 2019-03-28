@@ -1,0 +1,39 @@
+<style lang='scss'>
+.project-index-item {
+    width: 100%;
+    border-radius: 10rpx;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 40rpx;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    font-size: 28rpx;
+    border-bottom: 1px solid #eeeeee;
+    padding: 24rpx 0;
+
+    .project-name {
+      font-size: 30rpx;
+      font-weight: bold;
+      margin-bottom: 10rpx;
+    }
+
+    .stars {
+      color: #707070;
+    }
+}
+</style>
+<template>
+<view class="project-index-item">
+  <view class="project-name">{{ item.name_with_namespace }}</view>
+  <view class="stars">★ {{ item.star_count }}</view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class ProjectIndexItem extends wepy.component {
+  props = {
+    item: {}
+  }
+}
+</script>

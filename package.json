@@ -10,13 +10,10 @@
     "clean": "find ./dist -maxdepth 1 -not -name 'project.config.json' -not -name 'dist' | xargs rm -rf",
     "test": "mocha 'test/*.test.js' -r babel-core/register -r babel-polyfill"
   },
-  "wepy": {
-    "module-a": false,
-    "./src/components/list": "./src/components/wepy-list.wpy"
-  },
   "author": "Martin <martin_nett@icloud.com>",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.11",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
