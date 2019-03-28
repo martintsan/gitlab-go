@@ -1,35 +1,52 @@
 <style lang="scss">
+@import 'styles/base';
 </style>
 <script>
 import wepy from 'wepy';
 import 'wepy-async-function';
+import i18n from './utils/wxapp-i18n'
 
 import { setStore } from 'wepy-redux';
 import configStore from './store';
 
-// const store = configStore();
-// setStore(store);
+const store = configStore();
+setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index'],
+    debug: false,
+    pages: [
+      'pages/index'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#292961',
       navigationBarTitleText: 'GitLab Go',
       navigationBarTextStyle: 'white'
+    },
+    usingComponents: {
+      "van-cell": "./vendors/vant/cell/index",
+      "van-cell-group": "./vendors/vant/cell-group/index",
+      "van-button": "./vendors/vant/button/index",
+      "van-field": "./vendors/vant/field/index"
     }
-  };
-
-  globalData = {
-    userInfo: null
   };
 
   constructor() {
     super();
     this.use('requestfix');
+    this.use('promisify');
   }
 
-  onLaunch() {}
+  loadLocale() {
+    let systemInfo = wx.getSystemInfoSync()
+    i18n.setupLocales()
+    i18n.setLocale(systemInfo.language)
+    wepy.i18n = i18n
+  }
+
+  onLaunch() {
+    this.loadLocale()
+  }
 }
 </script>

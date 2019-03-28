@@ -1,14 +1,93 @@
 <style lang='scss'>
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 32rpx;
+
+  .tips {
+    font-size: 28rpx;
+    color: #333333;
+    margin-bottom: 10rpx;
+  }
+
+  .show-more {
+    font-size: 28rpx;
+    color: darkblue;
+  }
+
+  .gitlab-tips {
+    font-size: 28rpx;
+    color: #333333;
+  }
+
+  .form {
+    margin-top: 20rpx;
+    font-size: 28rpx;
+
+    .input-token {
+      border: 1px solid #cccccc;
+      border-radius: 8rpx;
+      padding: 10rpx 20rpx;
+      font-size: 26rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .login-button {
+      height: 60rpx;
+    }
+  }
+}
 </style>
 <template>
-<view>GitLab Go</view>
+<view id="index" class="container">
+  <view class="h1">{{ lang.welcome }}</view>
+  <view class="tips">{{ lang.tips }}</view>
+  <view class="show-more" wx:if="{{ guideOff }}" @tap.stop="showGuide">{{ lang.showMore }}</view>
+  <view class="gitlab-tips" wx:else>
+    <rich-text nodes="{{ lang.gitlabTips }}"></rich-text>
+  </view>
+  <view class="form">
+    <!-- <input class="input-token" cursor-spacing="20" type="text" bindinput="setToken" placeholder="{{ lang.token }}"></input> -->
+    <van-cell-group>
+      <van-field
+        label="Private Token"
+        left-icon="contact"
+        border="false"
+      />
+    </van-cell-group>
+    <van-button class="login-button" type="primary" plain="true" block="true">Login</van-button>
+  </view>
+</view>
 </template>
 <script>
 import wepy from 'wepy';
+import BasePage from './base';
 
-export default class IndexPage extends wepy.page {
-  data = {};
-  methods = {};
-  onLoad() {}
+export default class IndexPage extends BasePage {
+  data = {
+    guideOff: true,
+    ...this.def
+  };
+
+  async onLoad() {
+    this.setLang();
+  }
+
+  setLang() {
+    const t = wepy.i18n.translate;
+    this.lang.welcome = t('idx-welcome');
+    this.lang.tips = t('idx-tips');
+    this.lang.showMore = t('idx-show-more');
+    this.lang.gitlabTips = t('idx-gitlab-tips');
+    this.lang.token = t('idx-token');
+    this.$apply();
+  }
+
+  methods = {
+    showGuide() {
+      this.guideOff = false;
+      this.$apply();
+    }
+  };
 }
 </script>
