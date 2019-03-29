@@ -38,6 +38,11 @@
       font-size: 30rpx;
       font-weight: bold;
       margin-bottom: 10rpx;
+
+      .icon-image {
+        vertical-align: middle;
+        margin-bottom: 10rpx;
+      }
     }
 
     .project-desc {
@@ -72,14 +77,16 @@
     {{ item.upperFirstLetter }}
   </view>
   <view class="project-index-item">
-    <view class="project-name">{{ item.name_with_namespace }}</view>
+    <view class="project-name">
+      {{ item.name_with_namespace }} <image wx:if="{{ item.visibility === 'private' }}" class="icon-image icon-image-small" src="/images/lock.png"></image>
+    </view>
     <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
     <view class="counts">
       <view class="counts-item">
-        <image class="icon-image icon-image-small" src="/images/star.png" mode="aspectFill"></image><text class="stars">{{ item.star_count }}</text>
+        <image class="icon-image icon-image-small" src="/images/star.png"></image><text class="stars">{{ item.star_count }}</text>
       </view>
       <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
-        <image class="icon-image icon-image-small" src="/images/alert-circle.png" mode="aspectFill"></image><text>{{ item.open_issues_count }}</text>
+        <image class="icon-image icon-image-small" src="/images/alert-circle.png"></image><text>{{ item.open_issues_count }}</text>
       </view>
     </view>
   </view>
