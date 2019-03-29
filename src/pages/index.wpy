@@ -82,6 +82,7 @@ import BasePage from './base'
 import UsersService from '../services/users'
 import ProjectsService from '../services/projects'
 import ProjectIndexItem from '../components/projectIndexItem'
+import LetterAvatar from '../utils/letter-avatar'
 
 export default class IndexPage extends BasePage {
   data = {
@@ -107,7 +108,14 @@ export default class IndexPage extends BasePage {
   async loadData() {
     let result = await ProjectsService.getUserProjects(this.currentUser.id)
     if (result.status) {
-      this.projects = result.data
+      let projects = result.data
+      this.projects = projects.map((item) => {
+        item.upperFirstLetter = item.name[0].toUpperCase()
+        if (!item.avatar_url) {
+          item.bgColor = LetterAvatar(item.name)
+        }
+        return item
+      })
     }
   }
 

@@ -1,6 +1,28 @@
 <style lang='scss'>
-.project-index-item {
-    width: 100%;
+.project-index-item-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+
+  .project-avatar {
+    flex-shrink: 1;
+    margin-top: 24rpx;
+    margin-right: 24rpx;
+    min-width: 80rpx;
+    height: 80rpx;
+    color: white;
+    text-align: center;
+    border-radius: 8rpx;
+    line-height: 80rpx;
+
+    .project-avatar-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .project-index-item {
+    flex-grow: 1;
     border-radius: 10rpx;
     background-size: cover;
     background-position: center;
@@ -38,24 +60,34 @@
         }
       }
     }
+  }
 }
 </style>
 <template>
-<view class="project-index-item">
-  <view class="project-name">{{ item.name_with_namespace }}</view>
-  <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
-  <view class="counts">
-    <view class="counts-item">
-      <image class="icon-image icon-image-small" src="/images/star.png" mode="aspectFill"></image><text class="stars">{{ item.star_count }}</text>
-    </view>
-    <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
-      <image class="icon-image icon-image-small" src="/images/alert-circle.png" mode="aspectFill"></image><text>{{ item.open_issues_count }}</text>
+<view class="project-index-item-wrapper">
+  <view class="project-avatar" wx:if="{{ item.avatar_url }}">
+    <image class="project-avatar-image" src="{{ item.avatar_url }}" mode="aspectFill" lazy-load></image>
+  </view>
+  <view class="project-avatar" wx:else style="background-color: {{ item.bgColor }};">
+    {{ item.upperFirstLetter }}
+  </view>
+  <view class="project-index-item">
+    <view class="project-name">{{ item.name_with_namespace }}</view>
+    <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
+    <view class="counts">
+      <view class="counts-item">
+        <image class="icon-image icon-image-small" src="/images/star.png" mode="aspectFill"></image><text class="stars">{{ item.star_count }}</text>
+      </view>
+      <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
+        <image class="icon-image icon-image-small" src="/images/alert-circle.png" mode="aspectFill"></image><text>{{ item.open_issues_count }}</text>
+      </view>
     </view>
   </view>
 </view>
 </template>
 <script>
 import wepy from 'wepy'
+
 export default class ProjectIndexItem extends wepy.component {
   props = {
     item: {}
