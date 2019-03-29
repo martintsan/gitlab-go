@@ -2,19 +2,36 @@
 import wepy from 'wepy'
 import Base from '../mixins/base'
 import User from '../mixins/user'
+import Pagination from '../mixins/pagination'
 
 export default class BasePage extends wepy.page {
-  mixins = [Base, User]
+  mixins = [Base, User, Pagination]
 
   def = {
     locale: '',
     lang: {},
-    currentUser: {}
+    currentUser: {},
+    hasPagination: false,
+    extraParams: {}
   }
 
   constructor() {
     super()
     this.def.locale = wepy.i18n.locale
+  }
+
+  async loadData(allItems, serviceFn, mapFn, params) {
+    let result = await serviceFn(params)
+    if (result.status) {
+      let items = result.data.map(mapFn)
+      if (this.hasPagination) {
+        allItems = this.getPaginationData(allItems, items, result.header['X-Page'])
+        this.pagination(result.header)
+      } else {
+        allItems = items
+      }
+    }
+    return allItems
   }
 }
 </script>

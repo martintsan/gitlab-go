@@ -66,7 +66,7 @@
 <template>
 <view class="project-index-item-wrapper">
   <view class="project-avatar" wx:if="{{ item.avatar_url }}">
-    <image class="project-avatar-image" src="{{ item.avatar_url }}" mode="aspectFill" lazy-load="true"></image>
+    <image class="project-avatar-image" src="{{ item.avatar_url }}" bindload="imageLoaded" binderror="imageError"></image>
   </view>
   <view class="project-avatar" wx:else style="background-color: {{ item.bgColor }};">
     {{ item.upperFirstLetter }}
@@ -91,6 +91,17 @@ import wepy from 'wepy'
 export default class ProjectIndexItem extends wepy.component {
   props = {
     item: {}
+  }
+
+  methods = {
+    imageLoaded(e) {
+      console.log(e)
+    },
+
+    imageError() {
+      delete this.item.avatar_url
+      this.$apply()
+    }
   }
 }
 </script>

@@ -28,6 +28,7 @@ export default class Base {
       let resp = await api.request(url, params);
       return {
         status: resp.statusCode === 200 || resp.statusCode === 201,
+        header: resp.header,
         data: resp.data
       };
     } catch (e) {

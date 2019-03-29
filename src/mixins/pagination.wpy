@@ -1,0 +1,29 @@
+<script>
+import wepy from 'wepy'
+import * as _ from 'lodash'
+export default class Pagination extends wepy.mixin {
+  nextPage = 1
+  noMore = true
+
+  resetPagination() {
+    this.nextPage = 1
+    this.noMore = true
+  }
+
+  pagination(header) {
+    if (header && +header['X-Total-Pages'] !== 0 && +header['X-Page'] !== +header['X-Total-Pages']) {
+      this.nextPage = +header['X-Next-Page']
+      this.noMore = false
+    } else {
+      this.noMore = true
+    }
+  }
+
+  getPaginationData(datas, data, page) {
+    if (typeof page !== 'number') {
+      page = +page
+    }
+    return page === 1 ? data : _.concat(datas, data)
+  }
+}
+</script>

@@ -79,6 +79,7 @@
 <script>
 import wepy from 'wepy'
 import BasePage from './base'
+import { extend } from '../utils/validate'
 import UsersService from '../services/users'
 import ProjectsService from '../services/projects'
 import ProjectIndexItem from '../components/projectIndexItem'
@@ -99,25 +100,38 @@ export default class IndexPage extends BasePage {
   async onLoad() {
     this.userLogin()
     this.setLang()
+    this.hasPagination = true
     if (this.currentUser && this.currentUser.id) {
-      await this.loadData()
+      this.extraParams = {
+        page: 1,
+        per_page: 20
+      }
+      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
     }
     this.loaded()
   }
 
-  async loadData() {
-    let result = await ProjectsService.getUserProjects(this.currentUser.id)
-    if (result.status) {
-      let projects = result.data
-      this.projects = projects.map((item) => {
-        item.upperFirstLetter = item.name[0].toUpperCase()
-        if (!item.avatar_url) {
-          item.bgColor = LetterAvatar(item.name)
-        }
-        return item
-      })
-    }
+  mapProjects(item) {
+    item.upperFirstLetter = item.name[0].toUpperCase()
+    item.bgColor = LetterAvatar(item.name)
+    return item
   }
+
+  // async loadData(params) {
+  //   let result = await ProjectsService.getUserProjects(params)
+  //   if (result.status) {
+  //     let projects = result.data.map((item) => {
+  //       item.upperFirstLetter = item.name[0].toUpperCase()
+  //       if (!item.avatar_url) {
+  //         item.bgColor = LetterAvatar(item.name)
+  //       }
+  //       return item
+  //     })
+  //     this.projects = this.getPaginationData(this.projects, projects, result.header['X-Page'])
+  //     this.pagination(result.header)
+  //   }
+  // }
 
   setLang() {
     const t = wepy.i18n.translate
@@ -128,6 +142,17 @@ export default class IndexPage extends BasePage {
     this.lang.token = t('idx-token')
     this.lang.login = t('common-login')
     this.$apply()
+  }
+
+  async onReachBottom() {
+    if (!this.noMore) {
+      let params = extend(this.extraParams, {
+        page: this.nextPage
+      })
+      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, params)
+    }
+    this.loaded()
   }
 
   methods = {

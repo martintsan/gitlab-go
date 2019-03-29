@@ -1,14 +1,21 @@
 import Base from './base';
+import {
+  isEmpty,
+  extend
+} from '../utils/validate'
 
 export default class ProjectsService extends Base {
-  static async getUserProjects() {
+  static async getUserProjects(options) {
     let url = `${this.baseUrl}/projects`;
+    options = extend(options, {
+      membership: true
+    })
+    if (isEmpty(options['order_by'])) {
+      options['order_by'] = 'last_activity_at'
+    }
     let params = {
       method: 'GET',
-      data: {
-        membership: true,
-        order_by: 'last_activity_at'
-      }
+      data: options
     }
     return await this.doAPI(url, params, true);
   }
