@@ -3,53 +3,6 @@
   box-sizing: border-box;
   width: 100%;
   padding: 32rpx;
-
-  .h2 {
-    margin-bottom: 20rpx;
-  }
-
-  .tips {
-    font-size: 28rpx;
-    color: #333333;
-    margin-bottom: 10rpx;
-  }
-
-  .show-more {
-    font-size: 28rpx;
-    color: darkblue;
-  }
-
-  .gitlab-tips {
-    font-size: 26rpx;
-    color: #2b2b2b;
-
-    .pargh {
-      margin-bottom: 10rpx;
-    }
-  }
-
-  .form {
-    margin-top: 60rpx;
-    font-size: 28rpx;
-
-    .input-token {
-      min-height: 80rpx;
-      border: 1px solid #cccccc;
-      border-radius: 8rpx;
-      padding: 10rpx 20rpx;
-      font-size: 32rpx;
-      margin-bottom: 20rpx;
-    }
-
-    .login-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #292961;
-      height: 80rpx;
-      font-size: 30rpx;
-    }
-  }
 }
 
 .projects-wrapper {
@@ -57,19 +10,7 @@
 }
 </style>
 <template>
-<view class="container" wx:if="{{ !currentUser || !currentUser.id }}">
-  <view class="h2">{{ lang.welcome }}</view>
-  <view class="tips">{{ lang.tips }}</view>
-  <view class="show-more" wx:if="{{ guideOff }}" @tap.stop="showGuide">{{ lang.showMore }}</view>
-  <view class="gitlab-tips" wx:else>
-    <rich-text nodes="{{ lang.gitlabTips }}"></rich-text>
-  </view>
-  <view class="form">
-    <input class="input-token" cursor-spacing="20" type="text" bindinput="setToken" placeholder="{{ lang.token }}"></input>
-    <button class="login-button" hover-class="none" plain="true" @tap.stop="login">{{ lang.login }}</button>
-    <!-- <van-button class="login-button" type="primary" plain="true" block="true" @tap.stop="login">Login</van-button> -->
-  </view>
-</view>
+<loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
 <view class="container projects-wrapper" wx:else>
   <repeat for="{{ projects }}" key="index" index="index" item="item">
     <projectIndexItem :item.sync="item"></projectIndexItem>
@@ -80,27 +21,25 @@
 import wepy from 'wepy'
 import BasePage from './base'
 import moment from 'moment'
-import { extend } from '../utils/validate'
-import UsersService from '../services/users'
+import { isEmpty, extend } from '../utils/validate'
 import ProjectsService from '../services/projects'
+import LoginModal from '../components/loginModal'
 import ProjectIndexItem from '../components/projectIndexItem'
 import LetterAvatar from '../utils/letter-avatar'
 
 export default class IndexPage extends BasePage {
   data = {
-    guideOff: true,
-    privateToken: '',
     projects: [],
     ...this.def
   }
 
   components = {
+    loginModal: LoginModal,
     projectIndexItem: ProjectIndexItem
   }
 
   async onLoad() {
     this.userLogin()
-    this.setLang()
     this.hasPagination = true
     if (this.currentUser && this.currentUser.id) {
       this.extraParams = {
@@ -113,6 +52,22 @@ export default class IndexPage extends BasePage {
     this.loaded()
   }
 
+  async onTabItemTap() {
+    // 仅当返回首页时且在其他页面首次登录后刷新数据
+    if (isEmpty(this.currentUser)) {
+      this.userLogin()
+      if (this.currentUser && this.currentUser.id) {
+        this.extraParams = {
+          page: 1,
+          per_page: 20
+        }
+        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+        this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+      }
+      this.loaded()
+    }
+  }
+
   mapProjects(item) {
     const t = wepy.i18n.translate
     item.upperFirstLetter = item.name[0].toUpperCase()
@@ -121,32 +76,6 @@ export default class IndexPage extends BasePage {
       date: moment(item.last_activity_at).fromNow()
     })
     return item
-  }
-
-  // async loadData(params) {
-  //   let result = await ProjectsService.getUserProjects(params)
-  //   if (result.status) {
-  //     let projects = result.data.map((item) => {
-  //       item.upperFirstLetter = item.name[0].toUpperCase()
-  //       if (!item.avatar_url) {
-  //         item.bgColor = LetterAvatar(item.name)
-  //       }
-  //       return item
-  //     })
-  //     this.projects = this.getPaginationData(this.projects, projects, result.header['X-Page'])
-  //     this.pagination(result.header)
-  //   }
-  // }
-
-  setLang() {
-    const t = wepy.i18n.translate
-    this.lang.welcome = t('idx-welcome')
-    this.lang.tips = t('idx-tips')
-    this.lang.showMore = t('idx-show-more')
-    this.lang.gitlabTips = t('idx-gitlab-tips')
-    this.lang.token = t('idx-token')
-    this.lang.login = t('common-login')
-    this.$apply()
   }
 
   async onReachBottom() {
@@ -160,28 +89,18 @@ export default class IndexPage extends BasePage {
     this.loaded()
   }
 
-  methods = {
-    showGuide() {
-      this.guideOff = false
-      this.$apply()
-    },
-    setToken(e) {
-      this.privateToken = e.detail.value
-      this.$apply()
-    },
-    async login() {
-      if (this.privateToken) {
-        let result = await UsersService.getUser(this.privateToken)
-        if (result.status) {
-          wepy.setStorageSync('GITLAB_PRIVATE_TOKEN', this.privateToken)
-          wepy.setStorageSync('CURRENT_USER', result.data)
-          this.currentUser = result.data
-          await this.loadData()
-        } else {
-          this.showErrorMsg(result.data.message)
+  events = {
+    'user-logined': async (user) => {
+      if (!isEmpty(user)) {
+        this.currentUser = user
+        this.extraParams = {
+          page: 1,
+          per_page: 20
         }
-        this.loaded()
+        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+        this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
       }
+      this.loaded()
     }
   }
 }

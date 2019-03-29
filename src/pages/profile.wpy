@@ -50,7 +50,8 @@
 }
 </style>
 <template>
-<view class="container">
+<loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
+<view class="container" wx:else>
   <view class="userinfo">
     <view class="avatar" wx:if="{{ currentUser.avatar_url }}">
       <image class="avatar-image" src="{{ currentUser.avatar_url }}"></image>
@@ -62,7 +63,7 @@
   </view>
   <view class="operations">
     <button plain="true" size="mini" class="edit-profile-button">{{ lang.edit }}</button>
-    <button plain="true" size="mini" class="logout-button">{{ lang.logout }}</button>
+    <button plain="true" size="mini" class="logout-button" @tap.stop="logout">{{ lang.logout }}</button>
   </view>
 </view>
 </template>
@@ -70,13 +71,17 @@
 import wepy from 'wepy'
 import moment from 'moment'
 import BasePage from './base'
-// import UsersService from '../services/users'
-
+import { isEmpty } from '../utils/validate'
+import LoginModal from '../components/loginModal'
 import { dateFormatWithLang } from '../utils/lang-util'
 
 export default class ProfilePage extends BasePage {
   data = {
     ...this.def
+  }
+
+  components = {
+    loginModal: LoginModal
   }
 
   onShow(item) {
@@ -95,6 +100,37 @@ export default class ProfilePage extends BasePage {
     this.lang.edit = t('me-edit-profile')
     this.lang.logout = t('me-logout')
     this.$apply()
+  }
+
+  methods = {
+    logout() {
+      let page = this
+      wx.showActionSheet({
+        itemList: [this.lang.logout],
+        success(res) {
+          console.log(res)
+          if (res.tapIndex === 0) {
+            wepy.removeStorageSync('CURRENT_USER')
+            wepy.removeStorageSync('GITLAB_PRIVATE_TOKEN')
+            page.currentUser = {}
+            page.$apply()
+          }
+        }
+      })
+    }
+  }
+
+  events = {
+    'user-logined': async (user) => {
+      if (!isEmpty(user)) {
+        const t = wepy.i18n.translate
+        this.currentUser = user
+        this.lang.memberSince = t('me-member-since', {
+          date: moment(this.currentUser.created_at).format(dateFormatWithLang(this.locale))
+        })
+        this.loaded()
+      }
+    }
   }
 }
 </script>
