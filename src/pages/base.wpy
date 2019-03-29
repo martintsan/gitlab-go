@@ -1,5 +1,5 @@
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 import Base from '../mixins/base'
 import User from '../mixins/user'
 
@@ -7,8 +7,14 @@ export default class BasePage extends wepy.page {
   mixins = [Base, User]
 
   def = {
+    locale: '',
     lang: {},
     currentUser: {}
+  }
+
+  constructor() {
+    super()
+    this.def.locale = wepy.i18n.locale
   }
 }
 </script>

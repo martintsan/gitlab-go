@@ -5,6 +5,8 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import i18n from './utils/wxapp-i18n'
+import moment from 'moment'
+import zh from './utils/moment-zh'
 
 import { setStore } from 'wepy-redux'
 import configStore from './store'
@@ -16,13 +18,29 @@ export default class extends wepy.app {
   config = {
     debug: false,
     pages: [
-      'pages/index'
+      'pages/index',
+      'pages/profile'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#292961',
       navigationBarTitleText: 'GitLab Go',
       navigationBarTextStyle: 'white'
+    },
+    tabBar: {
+      color: '#6b6b6b',
+      selectedColor: '#292961',
+      list: [{
+        pagePath: 'pages/index',
+        text: 'Home',
+        iconPath: 'images/home.png',
+        selectedIconPath: 'images/home-selected.png'
+      }, {
+        pagePath: 'pages/profile',
+        text: 'Me',
+        iconPath: 'images/profile.png',
+        selectedIconPath: 'images/profile-selected.png'
+      }]
     }
   }
 
@@ -37,6 +55,9 @@ export default class extends wepy.app {
     i18n.setupLocales()
     i18n.setLocale(systemInfo.language)
     wepy.i18n = i18n
+    if (i18n.locale === 'zh') {
+      moment.locale('zh', zh)
+    }
   }
 
   onLaunch() {

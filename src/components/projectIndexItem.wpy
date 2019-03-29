@@ -4,13 +4,13 @@
     border-radius: 10rpx;
     background-size: cover;
     background-position: center;
-    margin-bottom: 40rpx;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
     font-size: 28rpx;
     border-bottom: 1px solid #eeeeee;
-    padding: 24rpx 0;
+    padding: 24rpx 32rpx 24rpx 0;
+    box-sizing: border-box;
 
     .project-name {
       font-size: 30rpx;

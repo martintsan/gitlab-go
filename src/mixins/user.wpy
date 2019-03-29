@@ -1,12 +1,14 @@
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 
 export default class User extends wepy.mixin {
   currentUser = {}
 
   userLogin() {
-    this.currentUser = wepy.getStorageSync('CURRENT_USER')
-    this.$apply()
+    if (!this.currentUser || !this.currentUser.id) {
+      this.currentUser = wepy.getStorageSync('CURRENT_USER')
+      this.$apply()
+    }
   }
 }
 </script>

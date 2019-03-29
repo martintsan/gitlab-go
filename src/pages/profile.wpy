@@ -1,0 +1,100 @@
+<style lang='scss'>
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 32rpx;
+
+  .userinfo {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    .avatar {
+      .avatar-image {
+        width: 160rpx;
+        height: 160rpx;
+        border: 2px solid white;
+        border-radius: 50%;
+        margin-bottom: 8rpx;
+      }
+    }
+
+    .nickname {
+      font-size: 46rpx;
+      margin-bottom: 12rpx;
+    }
+
+    .username {
+      color: #2e2e2e;
+      font-size: 28rpx;
+    }
+  }
+
+  .operations {
+    margin-top: 30rpx;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+
+    button {
+      flex-shrink: 1;
+      margin: 0;
+    }
+
+    .edit-profile-button {
+      margin-right: 32rpx;
+    }
+  }
+}
+</style>
+<template>
+<view class="container">
+  <view class="userinfo">
+    <view class="avatar" wx:if="{{ currentUser.avatar_url }}">
+      <image class="avatar-image" src="{{ currentUser.avatar_url }}"></image>
+    </view>
+    <view class="nickname">{{ currentUser.name }}</view>
+    <view class="username">
+      @{{ currentUser.username }} · {{ lang.memberSince }}
+    </view>
+  </view>
+  <view class="operations">
+    <button plain="true" size="mini" class="edit-profile-button">{{ lang.edit }}</button>
+    <button plain="true" size="mini" class="logout-button">{{ lang.logout }}</button>
+  </view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+import moment from 'moment'
+import BasePage from './base'
+// import UsersService from '../services/users'
+
+import { dateFormatWithLang } from '../utils/lang-util'
+
+export default class ProfilePage extends BasePage {
+  data = {
+    ...this.def
+  }
+
+  onShow(item) {
+    this.userLogin()
+    this.setLang()
+  }
+
+  setLang() {
+    const t = wepy.i18n.translate
+
+    if (this.currentUser && this.currentUser.id) {
+      this.lang.memberSince = t('me-member-since', {
+        date: moment(this.currentUser.created_at).format(dateFormatWithLang(this.locale))
+      })
+    }
+    this.lang.edit = t('me-edit-profile')
+    this.lang.logout = t('me-logout')
+    this.$apply()
+  }
+}
+</script>
