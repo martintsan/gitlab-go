@@ -55,14 +55,19 @@
       color: #707070;
       display: flex;
       flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-between;
 
       .counts-item {
+        flex-shrink: 1;
         display: inline-flex;
         align-items: center;
+        margin-right: 20rpx;
+      }
 
-        .stars {
-          margin-right: 20rpx;
-        }
+      .last-updated {
+        flex-grow: 1;
+        text-align: right;
       }
     }
   }
@@ -85,8 +90,11 @@
       <view class="counts-item">
         <image class="icon-image icon-image-small" src="/images/star.png"></image><text class="stars">{{ item.star_count }}</text>
       </view>
-      <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
+      <!-- <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
         <image class="icon-image icon-image-small" src="/images/alert-circle.png"></image><text>{{ item.open_issues_count }}</text>
+      </view> -->
+      <view class="last-updated">
+        {{ item.lastUpdated }}
       </view>
     </view>
   </view>

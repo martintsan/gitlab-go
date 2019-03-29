@@ -79,6 +79,7 @@
 <script>
 import wepy from 'wepy'
 import BasePage from './base'
+import moment from 'moment'
 import { extend } from '../utils/validate'
 import UsersService from '../services/users'
 import ProjectsService from '../services/projects'
@@ -113,8 +114,12 @@ export default class IndexPage extends BasePage {
   }
 
   mapProjects(item) {
+    const t = wepy.i18n.translate
     item.upperFirstLetter = item.name[0].toUpperCase()
     item.bgColor = LetterAvatar(item.name)
+    item.lastUpdated = t('idx-last-updated', {
+      date: moment(item.last_activity_at).fromNow()
+    })
     return item
   }
 

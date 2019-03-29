@@ -8,7 +8,8 @@ export default class ProjectsService extends Base {
   static async getUserProjects(options) {
     let url = `${this.baseUrl}/projects`;
     options = extend(options, {
-      membership: true
+      membership: true,
+      simple: true
     })
     if (isEmpty(options['order_by'])) {
       options['order_by'] = 'last_activity_at'
