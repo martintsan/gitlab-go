@@ -37,12 +37,17 @@
       border: 1px solid #cccccc;
       border-radius: 8rpx;
       padding: 10rpx 20rpx;
-      font-size: 30rpx;
+      font-size: 32rpx;
       margin-bottom: 20rpx;
     }
 
     .login-button {
-      height: 60rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #292961;
+      height: 80rpx;
+      font-size: 30rpx;
     }
   }
 }
@@ -61,7 +66,8 @@
   </view>
   <view class="form">
     <input class="input-token" cursor-spacing="20" type="text" bindinput="setToken" placeholder="{{ lang.token }}"></input>
-    <van-button class="login-button" type="primary" plain="true" block="true" @tap.stop="login">Login</van-button>
+    <button class="login-button" hover-class="none" plain="true" @tap.stop="login">{{ lang.login }}</button>
+    <!-- <van-button class="login-button" type="primary" plain="true" block="true" @tap.stop="login">Login</van-button> -->
   </view>
 </view>
 <view class="container projects-wrapper" wx:else>
@@ -112,6 +118,7 @@ export default class IndexPage extends BasePage {
     this.lang.showMore = t('idx-show-more')
     this.lang.gitlabTips = t('idx-gitlab-tips')
     this.lang.token = t('idx-token')
+    this.lang.login = t('common-login')
     this.$apply()
   }
 
@@ -123,7 +130,6 @@ export default class IndexPage extends BasePage {
     setToken(e) {
       this.privateToken = e.detail.value
       this.$apply()
-      console.log(this.privateToken)
     },
     async login() {
       if (this.privateToken) {

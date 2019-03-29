@@ -1,4 +1,6 @@
 const en = {
+  "common-login": "Login",
+
   "idx-welcome": "Welcome",
   "idx-tips": "According to GitLab API usage, you may need to provide private token to login. You can create as many personal access tokens as you like from your GitLab profile.",
   "idx-show-more": "Show more",

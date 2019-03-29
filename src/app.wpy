@@ -23,12 +23,6 @@ export default class extends wepy.app {
       navigationBarBackgroundColor: '#292961',
       navigationBarTitleText: 'GitLab Go',
       navigationBarTextStyle: 'white'
-    },
-    usingComponents: {
-      'van-cell': './vendors/vant/cell/index',
-      'van-cell-group': './vendors/vant/cell-group/index',
-      'van-button': './vendors/vant/button/index',
-      'van-field': './vendors/vant/field/index'
     }
   }
 

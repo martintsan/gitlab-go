@@ -1,4 +1,6 @@
 const en = {
+  "common-login": "立即登录",
+
   "idx-welcome": "欢迎使用",
   "idx-tips": "根据 GitLab API 的使用方式，您可能需要提供 Private Token 来登录。你可以在你的资料页面来创建 Private Token。",
   "idx-show-more": "了解更多",
