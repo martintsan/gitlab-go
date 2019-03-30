@@ -11,6 +11,7 @@ export default class BasePage extends wepy.page {
     locale: '',
     lang: {},
     currentUser: {},
+    noMore: true,
     hasPagination: false,
     extraParams: {}
   }

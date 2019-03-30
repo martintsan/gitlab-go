@@ -3,6 +3,11 @@ import wepy from 'wepy'
 import ui from '../utils/ui'
 
 export default class Base extends wepy.mixin {
+  loading() {
+    ui.loading()
+    this.$apply()
+  }
+
   loaded() {
     ui.loaded()
     this.$apply()

@@ -84,14 +84,14 @@ export default class ProfilePage extends BasePage {
     loginModal: LoginModal
   }
 
-  onShow(item) {
-    this.userLogin()
+  async onShow(item) {
+    await this.userLogin()
     this.setLang()
+    this.loaded()
   }
 
   setLang() {
     const t = wepy.i18n.translate
-
     if (this.currentUser && this.currentUser.id) {
       this.lang.memberSince = t('me-member-since', {
         date: moment(this.currentUser.created_at).format(dateFormatWithLang(this.locale))

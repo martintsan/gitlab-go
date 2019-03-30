@@ -7,14 +7,75 @@
 
 .projects-wrapper {
   padding-right: 0;
+
+  .projects-filter {
+    width: 100%;
+    height: 100rpx;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    padding-right: 32rpx;
+    position: fixed;
+    top: 32rpx;
+    left: 0;
+
+    .filter {
+      flex-shrink: 1;
+      text-align: center;
+      border: 1px solid #cccccc;
+      padding: 10rpx 20rpx;
+      color: #4b4b4b;
+      background-color: white;
+      box-shadow: 2rpx 2rpx 10rpx #cccccc;
+
+      &.active {
+        background-color: #292961;
+        border-color: #292961;
+        color: white;
+      }
+    }
+
+    .your-projects {
+      border-radius: 8rpx 0 0 8rpx;
+      border-right: none;
+    }
+
+    .starred-projects {
+      border-radius: 0 8rpx 8rpx 0;
+      border-left: none;
+    }
+  }
+
+  .projects-lists {
+    margin-top: 100rpx;
+  }
+
+  .no-more {
+    margin: 30rpx 0;
+    color: #6b6b6b;
+    font-size: 28rpx;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 32rpx;
+  }
 }
 </style>
 <template>
 <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
 <view class="container projects-wrapper" wx:else>
-  <repeat for="{{ projects }}" key="index" index="index" item="item">
-    <projectIndexItem :item.sync="item"></projectIndexItem>
-  </repeat>
+  <view class="projects-filter" style="opacity: {{ filterOpacity }};">
+    <view class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
+    <view class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
+  </view>
+  <view class="projects-lists">
+    <repeat for="{{ projects }}" key="index" index="index" item="item">
+      <projectIndexItem :item.sync="item"></projectIndexItem>
+    </repeat>
+  </view>
+  <view class="no-more" wx:if="{{ projects.length > 0 && noMore }}">{{ lang.noMore }}</view>
 </view>
 </template>
 <script>
@@ -29,7 +90,9 @@ import LetterAvatar from '../utils/letter-avatar'
 
 export default class IndexPage extends BasePage {
   data = {
+    mode: 'your',
     projects: [],
+    filterOpacity: 1,
     ...this.def
   }
 
@@ -39,7 +102,8 @@ export default class IndexPage extends BasePage {
   }
 
   async onLoad() {
-    this.userLogin()
+    await this.userLogin()
+    this.setLang()
     this.hasPagination = true
     if (this.currentUser && this.currentUser.id) {
       this.extraParams = {
@@ -52,20 +116,45 @@ export default class IndexPage extends BasePage {
     this.loaded()
   }
 
+  onPageScroll(e) {
+    this.setOpacity(100, e.scrollTop)
+    console.log(this.filterOpacity)
+  }
+
+  setOpacity(limit, scrollTop) {
+    let filterOpacity
+    if (scrollTop <= 0) {
+      filterOpacity = 1
+    } else if (scrollTop > limit) {
+      filterOpacity = 0
+    } else {
+      filterOpacity = ((limit - scrollTop) / limit).toFixed(1)
+    }
+    if (this.filterOpacity !== filterOpacity) {
+      this.filterOpacity = filterOpacity
+      this.$apply()
+    }
+  }
+
+  setLang() {
+    const t = wepy.i18n.translate
+    this.lang.noMore = t('common-no-more')
+    this.lang.yourProjects = t('idx-your-projects')
+    this.lang.starredProjects = t('idx-starred-projects')
+    this.$apply()
+  }
+
   async onTabItemTap() {
     // 仅当返回首页时且在其他页面首次登录后刷新数据
-    if (isEmpty(this.currentUser)) {
-      this.userLogin()
-      if (this.currentUser && this.currentUser.id) {
-        this.extraParams = {
-          page: 1,
-          per_page: 20
-        }
-        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+    if (this.checkLoginStatus() && this.projects.length === 0) {
+      this.extraParams = {
+        page: 1,
+        per_page: 20
       }
-      this.loaded()
+      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
     }
+    this.loaded()
   }
 
   mapProjects(item) {
@@ -87,6 +176,24 @@ export default class IndexPage extends BasePage {
       this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, params)
     }
     this.loaded()
+  }
+
+  methods = {
+    async pickMode(mode) {
+      this.mode = mode
+      this.extraParams = {
+        page: 1,
+        per_page: 20
+      }
+      if (mode === 'starred') {
+        this.extraParams['starred'] = true
+      } else {
+        delete this.extraParams.starred
+      }
+      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+      this.loaded()
+    }
   }
 
   events = {

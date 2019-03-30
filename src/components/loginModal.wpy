@@ -79,11 +79,11 @@ export default class LoginModal extends wepy.component {
 
   setLang() {
     const t = wepy.i18n.translate
-    this.lang.welcome = t('idx-welcome')
-    this.lang.tips = t('idx-tips')
-    this.lang.showMore = t('idx-show-more')
-    this.lang.gitlabTips = t('idx-gitlab-tips')
-    this.lang.token = t('idx-token')
+    this.lang.welcome = t('login-welcome')
+    this.lang.tips = t('login-tips')
+    this.lang.showMore = t('login-show-more')
+    this.lang.gitlabTips = t('login-gitlab-tips')
+    this.lang.token = t('login-token')
     this.lang.login = t('common-login')
     this.$apply()
   }

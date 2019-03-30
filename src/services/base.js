@@ -8,7 +8,11 @@ export default class Base {
   static baseUrl = BASEURL;
 
   static async doAPI(url, params, needAuth) {
-    ui.loading();
+    if (params['navLoading']) {
+      ui.navLoading();
+    } else {
+      ui.loading();
+    }
     try {
       if (!params && params.method) {
         throw 'HTTP method has not been defined yet.';

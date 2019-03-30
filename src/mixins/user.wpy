@@ -1,14 +1,30 @@
 <script>
 import wepy from 'wepy'
+import UsersService from '../services/users'
 
 export default class User extends wepy.mixin {
   currentUser = {}
 
-  userLogin() {
-    if (!this.currentUser || !this.currentUser.id) {
-      this.currentUser = wepy.getStorageSync('CURRENT_USER')
-      this.$apply()
+  async userLogin() {
+    let loginStatus = this.checkLoginStatus()
+    let privateToken = wepy.getStorageSync('GITLAB_PRIVATE_TOKEN')
+    if (!loginStatus && privateToken) {
+      let result = await UsersService.getUser(privateToken, true)
+      if (result.status) {
+        wepy.setStorageSync('CURRENT_USER', result.data)
+        this.currentUser = result.data
+      } else {
+        this.currentUser = {}
+      }
+    } else {
+      this.currentUser = wepy.getStorageSync('CURRENT_USER') || {}
     }
+    this.$apply()
+  }
+
+  checkLoginStatus() {
+    this.currentUser = wepy.getStorageSync('CURRENT_USER')
+    return this.currentUser && this.currentUser.id
   }
 }
 </script>

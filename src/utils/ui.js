@@ -3,6 +3,13 @@ import wepy from 'wepy';
 export default class ui {
   static isLoading = false;
 
+  static navLoading() {
+    if (!this.isLoading) {
+      this.isLoading = true;
+      wepy.showNavigationBarLoading();
+    }
+  }
+
   static loading() {
     if (!this.isLoading) {
       this.isLoading = true;
@@ -16,6 +23,7 @@ export default class ui {
     if (this.isLoading) {
       this.isLoading = false;
       wepy.hideLoading();
+      wepy.hideNavigationBarLoading();
     }
   }
 
@@ -24,6 +32,6 @@ export default class ui {
       title: '错误消息 / Error Msg',
       content: message,
       showCancel: false
-    })
+    });
   }
 }
