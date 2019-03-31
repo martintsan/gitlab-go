@@ -50,6 +50,14 @@
 
   .projects-lists {
     margin-top: 100rpx;
+
+    .project-index-item-wrapper {
+      width: 100%;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+      padding: 24rpx 32rpx 24rpx 0;
+    }
   }
 
   .no-more {
@@ -72,7 +80,12 @@
   </view>
   <view class="projects-lists">
     <repeat for="{{ projects }}" key="index" index="index" item="item">
-      <projectIndexItem :item.sync="item"></projectIndexItem>
+      <navigator url="/projects/detail?pid={{ item.id }}" hover-class="none">
+        <view class="project-index-item-wrapper">
+          <projectAvatar :item.sync="item"></projectAvatar>
+          <projectIndexItem :item.sync="item"></projectIndexItem>
+        </view>
+      </navigator>
     </repeat>
   </view>
   <view class="no-more" wx:if="{{ projects.length > 0 && noMore }}">{{ lang.noMore }}</view>
@@ -83,10 +96,11 @@ import wepy from 'wepy'
 import BasePage from './base'
 import moment from 'moment'
 import { isEmpty, extend } from '../utils/validate'
+import LetterAvatar from '../utils/letter-avatar'
 import ProjectsService from '../services/projects'
 import LoginModal from '../components/loginModal'
 import ProjectIndexItem from '../components/projectIndexItem'
-import LetterAvatar from '../utils/letter-avatar'
+import ProjectAvatar from '../components/projectAvatar'
 
 export default class IndexPage extends BasePage {
   data = {
@@ -99,7 +113,8 @@ export default class IndexPage extends BasePage {
 
   components = {
     loginModal: LoginModal,
-    projectIndexItem: ProjectIndexItem
+    projectIndexItem: ProjectIndexItem,
+    projectAvatar: ProjectAvatar
   }
 
   async onLoad() {
@@ -112,7 +127,7 @@ export default class IndexPage extends BasePage {
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
     }
     this.loaded()
   }
@@ -132,7 +147,7 @@ export default class IndexPage extends BasePage {
     if (this.filterOpacity !== this.tmpOpacity) {
       this.filterOpacity = this.tmpOpacity
       this.$apply()
-      console.log(this.filterOpacity)
+      // console.log(this.filterOpacity)
     }
   }
 
@@ -152,15 +167,15 @@ export default class IndexPage extends BasePage {
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
     }
     this.loaded()
   }
 
   mapProjects(item) {
     const t = wepy.i18n.translate
-    item.upperFirstLetter = item.name[0].toUpperCase()
     item.bgColor = LetterAvatar(item.name)
+    item.upperFirstLetter = item.name[0].toUpperCase()
     item.lastUpdated = t('idx-last-updated', {
       date: moment(item.last_activity_at).fromNow()
     })
@@ -173,7 +188,7 @@ export default class IndexPage extends BasePage {
         page: this.nextPage
       })
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, params)
+      this.projects = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
     }
     this.loaded()
   }
@@ -191,7 +206,7 @@ export default class IndexPage extends BasePage {
         delete this.extraParams.starred
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
       this.loaded()
     }
   }
@@ -205,7 +220,7 @@ export default class IndexPage extends BasePage {
           per_page: 20
         }
         let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        this.projects = await this.loadData(this.projects, serviceFn, this.mapProjects, this.extraParams)
+        this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
       }
       this.loaded()
     }

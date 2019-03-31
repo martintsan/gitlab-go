@@ -12,6 +12,10 @@ const en = {
   "idx-your-projects": "Your projects",
   "idx-starred-projects": "Starred projects",
 
+  "proj-detail-stars": "Stars",
+  "proj-detail-issues": "Open Issues",
+  "proj-detail-commits": "Commits",
+
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",
   "me-logout": "Logout"

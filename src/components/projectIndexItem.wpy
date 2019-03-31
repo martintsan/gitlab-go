@@ -1,123 +1,81 @@
 <style lang='scss'>
-.project-index-item-wrapper {
+.project-index-item {
+  flex-grow: 1;
+  background-size: cover;
+  background-position: center;
   display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  font-size: 28rpx;
+  border-bottom: 1px solid #eeeeee;
+  box-sizing: border-box;
+  padding-bottom: 24rpx;
+  padding-right: 32rpx;
+  margin-left: 24rpx;
 
-  .project-avatar {
-    flex-shrink: 1;
-    margin-top: 24rpx;
-    margin-right: 24rpx;
-    min-width: 80rpx;
-    height: 80rpx;
-    color: white;
-    text-align: center;
-    border-radius: 8rpx;
-    line-height: 80rpx;
+  .project-name {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
 
-    .project-avatar-image {
-      width: 100%;
-      height: 100%;
-      border-radius: 8rpx;
+    .icon-image {
+      vertical-align: middle;
+      margin-bottom: 10rpx;
     }
   }
 
-  .project-index-item {
-    flex-grow: 1;
-    background-size: cover;
-    background-position: center;
+  .project-desc {
+    font-size: 26rpx;
+    color: #5b5b5b;
+    margin-bottom: 10rpx;
+  }
+
+  .counts {
+    color: #707070;
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
+    align-items: center;
     justify-content: space-between;
-    font-size: 28rpx;
-    border-bottom: 1px solid #eeeeee;
-    padding: 24rpx 32rpx 24rpx 0;
-    box-sizing: border-box;
 
-    .project-name {
-      font-size: 30rpx;
-      font-weight: bold;
-      margin-bottom: 10rpx;
-
-      .icon-image {
-        vertical-align: middle;
-        margin-bottom: 10rpx;
-      }
-    }
-
-    .project-desc {
-      font-size: 26rpx;
-      color: #5b5b5b;
-      margin-bottom: 10rpx;
-    }
-
-    .counts {
-      color: #707070;
-      display: flex;
-      flex-flow: row nowrap;
+    .counts-item {
+      flex-shrink: 1;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      margin-right: 20rpx;
+    }
 
-      .counts-item {
-        flex-shrink: 1;
-        display: inline-flex;
-        align-items: center;
-        margin-right: 20rpx;
-      }
-
-      .last-updated {
-        flex-grow: 1;
-        text-align: right;
-        font-size: 26rpx;
-      }
+    .last-updated {
+      flex-grow: 1;
+      text-align: right;
+      font-size: 26rpx;
     }
   }
 }
 </style>
 <template>
-<view class="project-index-item-wrapper">
-  <view class="project-avatar" wx:if="{{ item.avatar_url }}">
-    <image class="project-avatar-image" src="{{ item.avatar_url }}" bindload="imageLoaded" binderror="imageError"></image>
+<view class="project-index-item">
+  <view class="project-name">
+    {{ item.name_with_namespace }}
   </view>
-  <view class="project-avatar" wx:else style="background-color: {{ item.bgColor }};">
-    {{ item.upperFirstLetter }}
-  </view>
-  <view class="project-index-item">
-    <view class="project-name">
-      {{ item.name_with_namespace }} <image wx:if="{{ item.visibility === 'private' }}" class="icon-image icon-image-small" src="/images/lock.png"></image>
+  <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
+  <view class="counts">
+    <view class="counts-item">
+      <image class="icon-image icon-image-small" src="/images/star.png"></image><text class="stars">{{ item.star_count }}</text>
     </view>
-    <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
-    <view class="counts">
-      <view class="counts-item">
-        <image class="icon-image icon-image-small" src="/images/star.png"></image><text class="stars">{{ item.star_count }}</text>
-      </view>
-      <!-- <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
-        <image class="icon-image icon-image-small" src="/images/alert-circle.png"></image><text>{{ item.open_issues_count }}</text>
-      </view> -->
-      <view class="last-updated">
-        {{ item.lastUpdated }}
-      </view>
+    <!-- <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
+      <image class="icon-image icon-image-small" src="/images/alert-circle.png"></image><text>{{ item.open_issues_count }}</text>
+    </view> -->
+    <view class="last-updated">
+      {{ item.lastUpdated }}
     </view>
   </view>
 </view>
 </template>
 <script>
 import wepy from 'wepy'
-
 export default class ProjectIndexItem extends wepy.component {
   props = {
     item: {}
-  }
-
-  methods = {
-    imageLoaded(e) {
-      console.log(e)
-    },
-
-    imageError() {
-      delete this.item.avatar_url
-      this.$apply()
-    }
   }
 }
 </script>

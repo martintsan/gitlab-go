@@ -12,6 +12,10 @@ const en = {
   "idx-your-projects": "你的项目",
   "idx-starred-projects": "星标项目",
 
+  "proj-detail-stars": "星标",
+  "proj-detail-issues": "问题",
+  "proj-detail-commits": "提交",
+
   "me-member-since": "在 {date} 加入会员",
   "me-edit-profile": "编辑个人资料",
   "me-logout": "退出登录"

@@ -41,7 +41,13 @@ export default class extends wepy.app {
         iconPath: 'images/profile.png',
         selectedIconPath: 'images/profile-selected.png'
       }]
-    }
+    },
+    subPackages: [{
+      root: 'projects',
+      pages: [
+        'detail'
+      ]
+    }]
   }
 
   constructor() {

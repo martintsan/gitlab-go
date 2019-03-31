@@ -20,4 +20,19 @@ export default class ProjectsService extends Base {
     }
     return await this.doAPI(url, params, true);
   }
+
+  static async getProjectDetail(pid) {
+    let url = `${this.baseUrl}/projects/${pid}`;
+    let params = {
+      method: 'GET',
+      data: {
+        statistics: true
+      }
+    }
+    return await this.doAPI(url, params, true);
+  }
+
+  static async getProjectReadme() {
+    
+  }
 }
