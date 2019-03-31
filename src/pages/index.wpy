@@ -18,7 +18,7 @@
     font-size: 28rpx;
     padding-right: 32rpx;
     position: fixed;
-    top: 32rpx;
+    top: 16rpx;
     left: 0;
 
     .filter {
@@ -93,6 +93,7 @@ export default class IndexPage extends BasePage {
     mode: 'your',
     projects: [],
     filterOpacity: 1,
+    tmpOpacity: 1,
     ...this.def
   }
 
@@ -118,21 +119,20 @@ export default class IndexPage extends BasePage {
 
   onPageScroll(e) {
     this.setOpacity(100, e.scrollTop)
-    console.log(this.filterOpacity)
   }
 
   setOpacity(limit, scrollTop) {
-    let filterOpacity
     if (scrollTop <= 0) {
-      filterOpacity = 1
+      this.tmpOpacity = 1
     } else if (scrollTop > limit) {
-      filterOpacity = 0
+      this.tmpOpacity = 0
     } else {
-      filterOpacity = ((limit - scrollTop) / limit).toFixed(1)
+      this.tmpOpacity = ((limit - scrollTop) / limit).toFixed(1)
     }
-    if (this.filterOpacity !== filterOpacity) {
-      this.filterOpacity = filterOpacity
+    if (this.filterOpacity !== this.tmpOpacity) {
+      this.filterOpacity = this.tmpOpacity
       this.$apply()
+      console.log(this.filterOpacity)
     }
   }
 
