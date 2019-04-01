@@ -69,6 +69,11 @@
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-between;
+
+    .desc {
+      font-size: 26rpx;
+      color: #6b6b6b;
+    }
   }
 }
 
@@ -111,7 +116,10 @@
 </view>
 <view class="default-project">
   <label class="radio">
-    <text>{{ lang.default }}</text>
+    <view class="label">
+      <view class="name">{{ lang.default }}</view>
+      <view class="desc">{{ lang.defaultDesc }}</view>
+    </view>
     <radio checked="{{ isDefaultProject }}" @tap.stop="toggleDefaultProject" />
   </label>
 </view>
@@ -172,6 +180,7 @@ export default class ProjectsDetail extends BasePage {
     this.lang.commits = t('proj-detail-commits')
     this.lang.noReadme = t('proj-detail-noreadme')
     this.lang.default = t('proj-detail-default')
+    this.lang.defaultDesc = t('proj-detail-default-desc')
     this.$apply()
   }
 

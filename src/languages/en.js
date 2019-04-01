@@ -17,6 +17,7 @@ const en = {
   "proj-detail-commits": "Commits",
   "proj-detail-noreadme": "No readme file",
   "proj-detail-default": "Set as default project",
+  "proj-detail-default-desc": "Issues tab will show default project issues",
 
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",
