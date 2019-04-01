@@ -7,6 +7,7 @@ import 'wepy-async-function'
 import i18n from './utils/wxapp-i18n'
 import moment from 'moment'
 import zh from './utils/moment-zh'
+import Towxml from 'towxml'
 
 import { setStore } from 'wepy-redux'
 import configStore from './store'
@@ -54,6 +55,7 @@ export default class extends wepy.app {
     super()
     this.use('requestfix')
     this.use('promisify')
+    wepy.towxml = new Towxml()
   }
 
   loadLocale() {

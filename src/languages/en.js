@@ -15,6 +15,7 @@ const en = {
   "proj-detail-stars": "Stars",
   "proj-detail-issues": "Open Issues",
   "proj-detail-commits": "Commits",
+  "proj-detail-noreadme": "No readme file",
 
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",

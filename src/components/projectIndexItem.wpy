@@ -9,8 +9,8 @@
   font-size: 28rpx;
   border-bottom: 1px solid #eeeeee;
   box-sizing: border-box;
-  padding-bottom: 24rpx;
   padding-right: 32rpx;
+  padding-bottom: 24rpx;
   margin-left: 24rpx;
 
   .project-name {

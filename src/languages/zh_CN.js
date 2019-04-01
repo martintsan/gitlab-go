@@ -15,6 +15,7 @@ const en = {
   "proj-detail-stars": "星标",
   "proj-detail-issues": "问题",
   "proj-detail-commits": "提交",
+  "proj-detail-noreadme": "尚未创建 README 文件",
 
   "me-member-since": "在 {date} 加入会员",
   "me-edit-profile": "编辑个人资料",

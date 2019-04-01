@@ -1,8 +1,10 @@
 <style lang='scss'>
+@import './towxml/style/main.wxss';
+@import './towxml/style/theme/light.wxss';
+
 .container {
-  box-sizing: border-box;
   width: 100%;
-  padding: 32rpx;
+  padding: 32rpx 32rpx 0 32rpx;
 
   .project-info {
     width: 100%;
@@ -12,6 +14,7 @@
     .row {
       display: flex;
       flex-flow: row nowrap;
+      align-items: flex-start;
 
       .project-basic {
         margin-left: 24rpx;
@@ -56,8 +59,15 @@
     font-size: 28rpx;
   }
 }
+
+.no-readme {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-top: 60rpx;
+  text-align: center;
+}
 </style>
-<template>
+<template lang="wxml">
 <view class="container projects-detail">
   <view class="project-info">
     <view class="row">
@@ -86,9 +96,14 @@
       </view>
     </view>
   </view>
-  <view class="project-readme">
-    {{ project.readmeRAW }}
-  </view>
+</view>
+<view class="hr"></view>
+<view wx:if="{{ project.readmeRAW }}">
+  <import src="./towxml/entry.wxml"/>
+  <template is="entry" data="{{...project.readmeRAW}}"/>
+</view>
+<view class="no-readme" wx:if="{{ noReadme }}">
+  {{ lang.noReadme }}
 </view>
 </template>
 <script>
@@ -102,6 +117,7 @@ export default class ProjectsDetail extends BasePage {
   data = {
     lang: {},
     project: {},
+    noReadme: false,
     ...this.def
   }
 
@@ -119,7 +135,14 @@ export default class ProjectsDetail extends BasePage {
       project.bgColor = LetterAvatar(project.name)
       project.upperFirstLetter = project.name[0].toUpperCase()
     }
-    project.readmeRAW = readme.data
+    if (readme && readme.status && readme.data) {
+      this.noReadme = false
+      let readmeRAW = wepy.towxml.toJson(readme.data, 'markdown')
+      readmeRAW.theme = 'light'
+      project.readmeRAW = readmeRAW
+    } else {
+      this.noReadme = true
+    }
     this.project = project
     this.loaded()
   }
@@ -129,6 +152,7 @@ export default class ProjectsDetail extends BasePage {
     this.lang.stars = t('proj-detail-stars')
     this.lang.issues = t('proj-detail-issues')
     this.lang.commits = t('proj-detail-commits')
+    this.lang.noReadme = t('proj-detail-noreadme')
     this.$apply()
   }
 }

@@ -1,12 +1,7 @@
 <style lang='scss'>
 .container {
-  box-sizing: border-box;
   width: 100%;
-  padding: 32rpx;
-}
-
-.projects-wrapper {
-  padding-right: 0;
+  box-sizing: border-box;
 
   .projects-filter {
     width: 100%;
@@ -49,14 +44,15 @@
   }
 
   .projects-lists {
-    margin-top: 100rpx;
+    margin-top: 140rpx;
+    padding: 0 32rpx;
 
     .project-index-item-wrapper {
       width: 100%;
       display: flex;
       flex-flow: row nowrap;
       align-items: flex-start;
-      padding: 24rpx 32rpx 24rpx 0;
+      padding: 24rpx 0;
     }
   }
 
@@ -73,7 +69,7 @@
 </style>
 <template>
 <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
-<view class="container projects-wrapper" wx:else>
+<view class="container" wx:else>
   <view class="projects-filter" style="opacity: {{ filterOpacity }};">
     <view class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
     <view class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
