@@ -55,16 +55,13 @@
 <template>
 <view class="project-index-item">
   <view class="project-name">
-    {{ item.name_with_namespace }}
+    <image class="icon-image icon-image-small" src="/images/checkmark.png" wx:if="{{ item.isDefault }}"></image>{{ item.name_with_namespace }}
   </view>
   <view class="project-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
   <view class="counts">
     <view class="counts-item">
       <image class="icon-image icon-image-small" src="/images/star.png"></image><text class="stars">{{ item.star_count }}</text>
     </view>
-    <!-- <view class="counts-item" wx:if="{{ item.open_issues_count > 0 }}">
-      <image class="icon-image icon-image-small" src="/images/alert-circle.png"></image><text>{{ item.open_issues_count }}</text>
-    </view> -->
     <view class="last-updated">
       {{ item.lastUpdated }}
     </view>

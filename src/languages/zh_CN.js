@@ -16,6 +16,7 @@ const en = {
   "proj-detail-issues": "问题",
   "proj-detail-commits": "提交",
   "proj-detail-noreadme": "尚未创建 README 文件",
+  "proj-detail-default": "设为首选项目",
 
   "me-member-since": "在 {date} 加入会员",
   "me-edit-profile": "编辑个人资料",

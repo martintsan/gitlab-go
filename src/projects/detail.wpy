@@ -60,6 +60,18 @@
   }
 }
 
+.default-project {
+  padding: 32rpx;
+  font-size: 32rpx;
+
+  .radio {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
 .no-readme {
   font-size: 32rpx;
   font-weight: bold;
@@ -96,6 +108,12 @@
       </view>
     </view>
   </view>
+</view>
+<view class="default-project">
+  <label class="radio">
+    <text>{{ lang.default }}</text>
+    <radio checked="{{ isDefaultProject }}" @tap.stop="toggleDefaultProject" />
+  </label>
 </view>
 <view class="hr"></view>
 <view wx:if="{{ project.readmeRAW }}">
@@ -153,7 +171,25 @@ export default class ProjectsDetail extends BasePage {
     this.lang.issues = t('proj-detail-issues')
     this.lang.commits = t('proj-detail-commits')
     this.lang.noReadme = t('proj-detail-noreadme')
+    this.lang.default = t('proj-detail-default')
     this.$apply()
+  }
+
+  computed = {
+    isDefaultProject() {
+      return this.project.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+    }
+  }
+
+  methods = {
+    toggleDefaultProject() {
+      if (this.project.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')) {
+        wepy.removeStorageSync('DEFAULT_PROJECT_ID')
+      } else {
+        wepy.setStorageSync('DEFAULT_PROJECT_ID', this.project.id)
+      }
+      this.$apply()
+    }
   }
 }
 </script>

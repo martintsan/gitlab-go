@@ -128,6 +128,14 @@ export default class IndexPage extends BasePage {
     this.loaded()
   }
 
+  onShow() {
+    this.projects = this.projects.map((item) => {
+      item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+      return item
+    })
+    this.$apply()
+  }
+
   onPageScroll(e) {
     this.setOpacity(100, e.scrollTop)
   }
@@ -175,6 +183,7 @@ export default class IndexPage extends BasePage {
     item.lastUpdated = t('idx-last-updated', {
       date: moment(item.last_activity_at).fromNow()
     })
+    item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
     return item
   }
 
