@@ -84,7 +84,7 @@ export default class ProfilePage extends BasePage {
     loginModal: LoginModal
   }
 
-  async onShow(item) {
+  async onShow() {
     await this.userLogin()
     this.setLang()
     this.loaded()

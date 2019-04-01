@@ -1,0 +1,45 @@
+<style lang='scss'>
+.container {
+  width: 100%;
+  box-sizing: border-box;
+}
+</style>
+<template>
+<loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
+<view class="container" wx:else>
+  
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+import moment from 'moment'
+import BasePage from './base'
+import { isEmpty } from '../utils/validate'
+import LoginModal from '../components/loginModal'
+export default class IssuesPage extends BasePage {
+  data = {
+    ...this.def
+  }
+
+  components = {
+    loginModal: LoginModal
+  }
+
+  async onShow() {
+    await this.userLogin()
+    this.setLang()
+    this.loaded()
+  }
+
+  setLang() {}
+
+  events = {
+    'user-logined': async (user) => {
+      if (!isEmpty(user)) {
+        this.currentUser = user
+        this.loaded()
+      }
+    }
+  }
+}
+</script>

@@ -20,6 +20,7 @@ export default class extends wepy.app {
     debug: false,
     pages: [
       'pages/index',
+      'pages/issues',
       'pages/profile'
     ],
     window: {
@@ -33,9 +34,14 @@ export default class extends wepy.app {
       selectedColor: '#292961',
       list: [{
         pagePath: 'pages/index',
-        text: 'Home',
+        text: 'Projects',
         iconPath: 'images/home.png',
         selectedIconPath: 'images/home-selected.png'
+      }, {
+        pagePath: 'pages/issues',
+        text: 'Issues',
+        iconPath: 'images/issue.png',
+        selectedIconPath: 'images/issue-selected.png'
       }, {
         pagePath: 'pages/profile',
         text: 'Me',
