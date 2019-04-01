@@ -32,7 +32,14 @@ export default class ProjectsService extends Base {
     return await this.doAPI(url, params, true);
   }
 
-  static async getProjectReadme() {
-    
+  static async getProjectReadme(pid) {
+    let url = `${this.baseUrl}/projects/${pid}/repository/files/README.md/raw`;
+    let params = {
+      method: 'GET',
+      data: {
+        ref: 'master'
+      }
+    }
+    return await this.doAPI(url, params, true);
   }
 }
