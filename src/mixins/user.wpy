@@ -6,6 +6,7 @@ export default class User extends wepy.mixin {
   currentUser = {}
 
   async userLogin() {
+    this.currentUser = wepy.getStorageSync('CURRENT_USER')
     let loginStatus = this.checkLoginStatus()
     let privateToken = wepy.getStorageSync('GITLAB_PRIVATE_TOKEN')
     if (!loginStatus && privateToken) {
@@ -23,7 +24,6 @@ export default class User extends wepy.mixin {
   }
 
   checkLoginStatus() {
-    this.currentUser = wepy.getStorageSync('CURRENT_USER')
     return this.currentUser && this.currentUser.id
   }
 }

@@ -30,6 +30,11 @@
         border-color: #292961;
         color: white;
       }
+
+      &.only {
+        border-radius: 8rpx;
+        border: 1px solid #cccccc;
+      }
     }
 
     .your-projects {
@@ -76,9 +81,9 @@
 <!-- <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal> -->
 <view class="container">
   <view class="projects-filter" style="opacity: {{ filterOpacity }};">
-    <view class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
-    <view class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
-    <view class="filter public-projects {{ mode === 'public' ? 'active' : '' }}" @tap.stop="pickMode('public')">{{ lang.publicProjects }}</view>
+    <view wx:if="{{ logined }}" class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
+    <view wx:if="{{ logined }}" class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
+    <view class="filter public-projects {{ mode === 'public' ? 'active' : '' }} {{ !logined ? 'only' : '' }}" @tap.stop="pickMode('public')">{{ lang.publicProjects }}</view>
   </view>
   <view class="projects-lists">
     <repeat for="{{ projects }}" key="index" index="index" item="item">
@@ -110,6 +115,7 @@ export default class IndexPage extends BasePage {
     projects: [],
     filterOpacity: 1,
     tmpOpacity: 1,
+    logined: false,
     ...this.def
   }
 
@@ -124,21 +130,30 @@ export default class IndexPage extends BasePage {
     this.setLang()
     this.hasPagination = true
     this.projects = []
-    if (this.checkLoginStatus()) {
-      this.extraParams = {
-        page: 1,
-        per_page: 20
-      }
-      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-      this.projects = projects
+    this.logined = this.checkLoginStatus()
+    this.extraParams = {
+      page: 1,
+      per_page: 20
+    }
+    await this.fetchData()
+    this.loaded()
+  }
+
+  async fetchData() {
+    if (this.logined) {
+      this.extraParams['needAuth'] = true
+      delete this.extraParams.visibility
+      delete this.extraParams.order_by
     } else {
       this.mode = 'public'
-      let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-      this.projects = projects
+      delete this.extraParams.starred
+      this.extraParams['needAuth'] = false
+      this.extraParams['visibility'] = 'public'
+      this.extraParams['order_by'] = 'updated_at'
     }
-    this.loaded()
+    let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
+    let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+    this.projects = projects
   }
 
   onShow() {
@@ -147,6 +162,10 @@ export default class IndexPage extends BasePage {
       return item
     })
     this.$apply()
+  }
+
+  onReady() {
+    console.log(this.mode)
   }
 
   onPageScroll(e) {
@@ -177,25 +196,6 @@ export default class IndexPage extends BasePage {
     this.$apply()
   }
 
-  async onTabItemTap() {
-    // 仅当返回首页时且在其他页面首次登录后刷新数据
-    if (this.checkLoginStatus() && this.projects.length === 0) {
-      this.extraParams = {
-        page: 1,
-        per_page: 20
-      }
-      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-      this.projects = projects
-    } else {
-      this.mode = 'public'
-      let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-      this.projects = projects
-    }
-    this.loaded()
-  }
-
   mapProjects(item) {
     const t = wepy.i18n.translate
     item.bgColor = LetterAvatar(item.name)
@@ -209,19 +209,10 @@ export default class IndexPage extends BasePage {
 
   async onReachBottom() {
     if (!this.noMore) {
-      let params = extend(this.extraParams, {
+      this.extraParams = extend(this.extraParams, {
         page: this.nextPage
       })
-      if (this.checkLoginStatus()) {
-        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
-        this.projects = projects
-      } else {
-        this.mode = 'public'
-        let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-        let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
-        this.projects = projects
-      }
+      await this.fetchData()
     }
     this.loaded()
   }
@@ -234,19 +225,26 @@ export default class IndexPage extends BasePage {
         per_page: 20
       }
       if (mode === 'public') {
-        let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-        this.projects = projects
+        delete this.extraParams.starred
+        this.extraParams['needAuth'] = false
+        this.extraParams['visibility'] = 'public'
+        this.extraParams['order_by'] = 'updated_at'
+      } else if (mode === 'starred') {
+        delete this.extraParams.order_by
+        delete this.extraParams.visibility
+        this.extraParams['starred'] = true
+        this.extraParams['needAuth'] = true
       } else {
-        if (mode === 'starred') {
-          this.extraParams['starred'] = true
-        } else {
-          delete this.extraParams.starred
-        }
-        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-        this.projects = projects
+        delete this.extraParams.order_by
+        delete this.extraParams.visibility
+        delete this.extraParams.starred
+        this.extraParams['needAuth'] = true
       }
+
+      let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
+
       this.loaded()
     }
   }
@@ -255,13 +253,12 @@ export default class IndexPage extends BasePage {
     'user-logined': async (user) => {
       if (!isEmpty(user)) {
         this.currentUser = user
+        this.projects = []
         this.extraParams = {
           page: 1,
           per_page: 20
         }
-        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-        this.projects = projects
+        await this.fetchData()
       }
       this.loaded()
     }

@@ -7,8 +7,10 @@ import {
 export default class ProjectsService extends Base {
   static async getProjects(options) {
     let url = `${this.baseUrl}/projects`;
+    let needAuth = options.needAuth;
+    delete options.needAuth;
     options = extend({
-      visibility: 'public',
+      membership: needAuth,
       simple: true,
       order_by: 'last_activity_at'
     }, options);
@@ -17,22 +19,7 @@ export default class ProjectsService extends Base {
       method: 'GET',
       data: options
     }
-    return await this.doAPI(url, params, false);
-  }
-
-  static async getUserProjects(options) {
-    let url = `${this.baseUrl}/projects`;
-    options = extend({
-      membership: true,
-      simple: true,
-      order_by: 'last_activity_at'
-    }, options);
-
-    let params = {
-      method: 'GET',
-      data: options
-    }
-    return await this.doAPI(url, params, true);
+    return await this.doAPI(url, params, needAuth);
   }
 
   static async getProjectDetail(options) {

@@ -108,7 +108,6 @@ export default class ProfilePage extends BasePage {
       wx.showActionSheet({
         itemList: [this.lang.logout],
         success(res) {
-          console.log(res)
           if (res.tapIndex === 0) {
             wepy.removeStorageSync('CURRENT_USER')
             wepy.removeStorageSync('GITLAB_PRIVATE_TOKEN')
