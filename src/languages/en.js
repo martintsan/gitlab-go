@@ -11,6 +11,7 @@ const en = {
   "idx-last-updated": "Updated {date}",
   "idx-your-projects": "Your projects",
   "idx-starred-projects": "Starred projects",
+  "idx-public-projects": "Public projects",
 
   "proj-detail-stars": "Stars",
   "proj-detail-issues": "Open Issues",

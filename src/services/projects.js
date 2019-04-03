@@ -5,6 +5,21 @@ import {
 } from '../utils/validate'
 
 export default class ProjectsService extends Base {
+  static async getProjects(options) {
+    let url = `${this.baseUrl}/projects`;
+    options = extend({
+      visibility: 'public',
+      simple: true,
+      order_by: 'last_activity_at'
+    }, options);
+
+    let params = {
+      method: 'GET',
+      data: options
+    }
+    return await this.doAPI(url, params, false);
+  }
+
   static async getUserProjects(options) {
     let url = `${this.baseUrl}/projects`;
     options = extend({

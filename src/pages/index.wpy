@@ -38,6 +38,11 @@
     }
 
     .starred-projects {
+      border-left: none;
+      border-right: none;
+    }
+
+    .public-projects {
       border-radius: 0 8rpx 8rpx 0;
       border-left: none;
     }
@@ -68,11 +73,12 @@
 }
 </style>
 <template>
-<loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
-<view class="container" wx:else>
+<!-- <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal> -->
+<view class="container">
   <view class="projects-filter" style="opacity: {{ filterOpacity }};">
     <view class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
     <view class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
+    <view class="filter public-projects {{ mode === 'public' ? 'active' : '' }}" @tap.stop="pickMode('public')">{{ lang.publicProjects }}</view>
   </view>
   <view class="projects-lists">
     <repeat for="{{ projects }}" key="index" index="index" item="item">
@@ -117,12 +123,18 @@ export default class IndexPage extends BasePage {
     await this.userLogin()
     this.setLang()
     this.hasPagination = true
+    this.projects = []
     if (this.checkLoginStatus()) {
       this.extraParams = {
         page: 1,
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
+    } else {
+      this.mode = 'public'
+      let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
       let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
       this.projects = projects
     }
@@ -161,6 +173,7 @@ export default class IndexPage extends BasePage {
     this.lang.noMore = t('common-no-more')
     this.lang.yourProjects = t('idx-your-projects')
     this.lang.starredProjects = t('idx-starred-projects')
+    this.lang.publicProjects = t('idx-public-projects')
     this.$apply()
   }
 
@@ -172,6 +185,11 @@ export default class IndexPage extends BasePage {
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
+    } else {
+      this.mode = 'public'
+      let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
       let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
       this.projects = projects
     }
@@ -194,9 +212,16 @@ export default class IndexPage extends BasePage {
       let params = extend(this.extraParams, {
         page: this.nextPage
       })
-      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
-      this.projects = projects
+      if (this.checkLoginStatus()) {
+        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+        let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
+        this.projects = projects
+      } else {
+        this.mode = 'public'
+        let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
+        let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
+        this.projects = projects
+      }
     }
     this.loaded()
   }
@@ -208,14 +233,20 @@ export default class IndexPage extends BasePage {
         page: 1,
         per_page: 20
       }
-      if (mode === 'starred') {
-        this.extraParams['starred'] = true
+      if (mode === 'public') {
+        let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
+        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+        this.projects = projects
       } else {
-        delete this.extraParams.starred
+        if (mode === 'starred') {
+          this.extraParams['starred'] = true
+        } else {
+          delete this.extraParams.starred
+        }
+        let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
+        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+        this.projects = projects
       }
-      let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
-      this.projects = projects
       this.loaded()
     }
   }
