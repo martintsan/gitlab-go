@@ -19,6 +19,10 @@ const en = {
   "proj-detail-default": "Set as default project",
   "proj-detail-default-desc": "Issues tab will show default project issues",
 
+  "issues-title": "Issues of {project}",
+  "issues-none-proj": "You haven't set default project yet.",
+  "issues-created-at": "Created {date}",
+
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",
   "me-logout": "Logout"

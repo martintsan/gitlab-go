@@ -1,0 +1,97 @@
+<style lang='scss'>
+.issue-list-item {
+  width: 100%;
+  font-size: 28rpx;
+  padding: 24rpx 0;
+  display: flex;
+  align-items: center;
+  flex-flow: column nowrap;
+  border-bottom: 1px solid #eeeeee;
+
+  .issue-info {
+    width: 100%;
+    margin-bottom: 10rpx;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .issue-title {
+      flex-grow: 1;
+      font-weight: bold;
+    }
+
+    .avatar {
+      flex-shrink: 1;
+      display: flex;
+      align-items: center;
+
+      .avatar-image {
+        width: 48rpx;
+        height: 48rpx;
+        border-radius: 24rpx;
+      }
+    }
+  }
+
+  .id-and-tags {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20rpx;
+
+    .issue-id {
+      color: #707070;
+      font-weight: 400;
+    }
+
+    .label-item {
+      height: 40rpx;
+      font-size: 24rpx;
+      line-height: 38rpx;
+      padding: 0 16rpx;
+      display: inline-block;
+      background-color: #292961;
+      color: white;
+      border-radius: 20rpx;
+      margin-left: 10rpx;
+    }
+  }
+
+  .created_at {
+    width: 100%;
+    text-align: left;
+    font-size: 24rpx;
+    color: #707070;
+  }
+}
+</style>
+<template>
+<view class="issue-list-item">
+  <view class="issue-info">
+    <view class="issue-title">{{ item.title }}</view>
+    <view class="avatar">
+      <image class="avatar-image" src="{{ item.assignee.avatar_url }}"></image>
+    </view>
+  </view>
+  <view class="id-and-tags">
+    <view class="issue-id">#{{ item.iid }}</view>
+    <repeat for="{{ item.labels }}" key="labelIndex" index="labelIndex" item="label">
+      <view class="label-item">{{ label }}</view>
+    </repeat>
+  </view>
+  <view class="created_at">
+    {{ item.created }}
+  </view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class IssueListItem extends wepy.component {
+  props = {
+    item: {}
+  }
+}
+</script>

@@ -4,6 +4,7 @@
 
 .container {
   width: 100%;
+  box-sizing: border-box;
   padding: 32rpx 32rpx 0 32rpx;
 
   .project-info {
@@ -156,7 +157,7 @@ export default class ProjectsDetail extends BasePage {
     this.setLang()
     this.hasPagination = true
     let serviceFn = ProjectsService.getProjectDetail.bind(ProjectsService)
-    let [project, readme] = await Promise.all([this.loadData(serviceFn, options.pid, null), ProjectsService.getProjectReadme(options.pid)])
+    let [[project], readme] = await Promise.all([this.loadData(serviceFn, options, null), ProjectsService.getProjectReadme(options)])
     if (!isEmpty(project) && project.name) {
       project.bgColor = LetterAvatar(project.name)
       project.upperFirstLetter = project.name[0].toUpperCase()
@@ -197,7 +198,7 @@ export default class ProjectsDetail extends BasePage {
       } else {
         wepy.setStorageSync('DEFAULT_PROJECT_ID', this.project.id)
       }
-      this.$apply()
+      this.loaded()
     }
   }
 }

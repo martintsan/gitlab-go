@@ -117,13 +117,14 @@ export default class IndexPage extends BasePage {
     await this.userLogin()
     this.setLang()
     this.hasPagination = true
-    if (this.currentUser && this.currentUser.id) {
+    if (this.checkLoginStatus()) {
       this.extraParams = {
         page: 1,
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
     }
     this.loaded()
   }
@@ -171,7 +172,8 @@ export default class IndexPage extends BasePage {
         per_page: 20
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
     }
     this.loaded()
   }
@@ -193,7 +195,8 @@ export default class IndexPage extends BasePage {
         page: this.nextPage
       })
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
+      let [projects] = await this.loadData(serviceFn, params, this.mapProjects, this.projects)
+      this.projects = projects
     }
     this.loaded()
   }
@@ -211,7 +214,8 @@ export default class IndexPage extends BasePage {
         delete this.extraParams.starred
       }
       let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-      this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      this.projects = projects
       this.loaded()
     }
   }
@@ -225,7 +229,8 @@ export default class IndexPage extends BasePage {
           per_page: 20
         }
         let serviceFn = ProjectsService.getUserProjects.bind(ProjectsService)
-        this.projects = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+        let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+        this.projects = projects
       }
       this.loaded()
     }

@@ -19,6 +19,10 @@ const en = {
   "proj-detail-default": "设为首选项目",
   "proj-detail-default-desc": "问题标签页将显示首选项目的问题",
 
+  "issues-title": "{project} 的问题",
+  "issues-none-proj": "尚未设置首选项目",
+  "issues-created-at": "{date}创建",
+
   "me-member-since": "在 {date} 加入会员",
   "me-edit-profile": "编辑个人资料",
   "me-logout": "退出登录"

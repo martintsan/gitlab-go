@@ -1,49 +1,53 @@
 <style lang='scss' scoped>
-.h3 {
-  margin-bottom: 20rpx;
-}
+.login-modal {
+  padding: 24rpx 32rpx 0;
 
-.tips {
-  font-size: 28rpx;
-  color: #333333;
-  margin-bottom: 20rpx;
-}
-
-.show-more {
-  font-size: 28rpx;
-  color: darkblue;
-}
-
-.gitlab-tips {
-  font-size: 26rpx;
-  color: #2b2b2b;
-  font-family: monospace;
-
-  .pargh {
-    margin-bottom: 10px;
-  }
-}
-
-.form {
-  margin-top: 60rpx;
-  font-size: 28rpx;
-
-  .input-token {
-    min-height: 80rpx;
-    border: 1px solid #cccccc;
-    border-radius: 8rpx;
-    padding: 10rpx 20rpx;
-    font-size: 32rpx;
+  .h3 {
     margin-bottom: 20rpx;
   }
 
-  .login-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #292961;
-    height: 80rpx;
-    font-size: 30rpx;
+  .tips {
+    font-size: 28rpx;
+    color: #333333;
+    margin-bottom: 20rpx;
+  }
+
+  .show-more {
+    font-size: 28rpx;
+    color: darkblue;
+  }
+
+  .gitlab-tips {
+    font-size: 26rpx;
+    color: #2b2b2b;
+    font-family: monospace;
+
+    .pargh {
+      margin-bottom: 10px;
+    }
+  }
+
+  .form {
+    margin-top: 60rpx;
+    font-size: 28rpx;
+
+    .input-token {
+      min-height: 80rpx;
+      border: 1px solid #cccccc;
+      border-radius: 8rpx;
+      padding: 10rpx 20rpx;
+      font-size: 32rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .login-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #292961;
+      height: 80rpx;
+      font-size: 30rpx;
+    }
   }
 }
 </style>

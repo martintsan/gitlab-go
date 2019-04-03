@@ -7,13 +7,12 @@ import {
 export default class ProjectsService extends Base {
   static async getUserProjects(options) {
     let url = `${this.baseUrl}/projects`;
-    options = extend(options, {
+    options = extend({
       membership: true,
-      simple: true
-    })
-    if (isEmpty(options['order_by'])) {
-      options['order_by'] = 'last_activity_at'
-    }
+      simple: true,
+      order_by: 'last_activity_at'
+    }, options);
+
     let params = {
       method: 'GET',
       data: options
@@ -21,8 +20,8 @@ export default class ProjectsService extends Base {
     return await this.doAPI(url, params, true);
   }
 
-  static async getProjectDetail(pid) {
-    let url = `${this.baseUrl}/projects/${pid}`;
+  static async getProjectDetail(options) {
+    let url = `${this.baseUrl}/projects/${options.pid}`;
     let params = {
       method: 'GET',
       data: {
@@ -32,13 +31,21 @@ export default class ProjectsService extends Base {
     return await this.doAPI(url, params, true);
   }
 
-  static async getProjectReadme(pid) {
-    let url = `${this.baseUrl}/projects/${pid}/repository/files/README.md/raw`;
+  static async getProjectReadme(options) {
+    let url = `${this.baseUrl}/projects/${options.pid}/repository/files/README.md/raw`;
     let params = {
       method: 'GET',
       data: {
         ref: 'master'
       }
+    }
+    return await this.doAPI(url, params, true);
+  }
+
+  static async getProjectLabels(options) {
+    let url = `${this.baseUrl}/projects/${options.pid}/labels`;
+    let params = {
+      method: 'GET'
     }
     return await this.doAPI(url, params, true);
   }

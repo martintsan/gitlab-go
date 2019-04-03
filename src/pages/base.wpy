@@ -32,7 +32,7 @@ export default class BasePage extends wepy.page {
         allItems = items
       }
     }
-    return allItems
+    return [allItems, result.header['X-Total']]
   }
 }
 </script>
