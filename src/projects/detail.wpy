@@ -79,7 +79,7 @@
 }
 
 .no-readme {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: bold;
   margin-top: 60rpx;
   text-align: center;
@@ -99,23 +99,23 @@
         </view>
       </view>
     </view>
-    <view class="statistics" wx:if="{{ project && project.statistics }}">
+    <view class="statistics">
       <view class="item stars">
-        <view class="value">{{ project.star_count }}</view>
+        <view class="value">{{ project.star_count || 0 }}</view>
         <view class="label">{{ lang.stars }}</view>
       </view>
       <view class="item issues">
-        <view class="value">{{ project.open_issues_count }}</view>
+        <view class="value">{{ project.open_issues_count || 0 }}</view>
         <view class="label">{{ lang.issues }}</view>
       </view>
       <view class="item commits">
-        <view class="value">{{ project.statistics.commit_count }}</view>
+        <view class="value">{{ project.statistics.commit_count || 0 }}</view>
         <view class="label">{{ lang.commits }}</view>
       </view>
     </view>
   </view>
 </view>
-<view class="default-project">
+<view class="default-project" wx:if="{{ logined }}">
   <label class="radio">
     <view class="label">
       <view class="name">{{ lang.default }}</view>
@@ -145,6 +145,7 @@ export default class ProjectsDetail extends BasePage {
     lang: {},
     project: {},
     noReadme: false,
+    logined: false,
     ...this.def
   }
 
@@ -156,6 +157,7 @@ export default class ProjectsDetail extends BasePage {
     await this.userLogin()
     this.setLang()
     this.hasPagination = true
+    this.logined = this.checkLoginStatus()
     let serviceFn = ProjectsService.getProjectDetail.bind(ProjectsService)
     let [[project], readme] = await Promise.all([this.loadData(serviceFn, options, null), ProjectsService.getProjectReadme(options)])
     if (!isEmpty(project) && project.name) {

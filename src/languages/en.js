@@ -9,9 +9,9 @@ const en = {
   "login-token": "Please input your private token",
 
   "idx-last-updated": "Updated {date}",
-  "idx-your-projects": "Your projects",
-  "idx-starred-projects": "Starred projects",
-  "idx-public-projects": "Public projects",
+  "idx-your-projects": "Yours",
+  "idx-starred-projects": "Starred",
+  "idx-public-projects": "Explore",
 
   "proj-detail-stars": "Stars",
   "proj-detail-issues": "Open Issues",
