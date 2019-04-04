@@ -313,14 +313,17 @@ export default class IndexPage extends BasePage {
         delete this.extraParams.starred
         delete this.extraParams.visibility
         this.extraParams['needAuth'] = false
+        this.extraParams['membership'] = false
       } else if (mode === 'starred') {
         this.modeTitle = this.lang.starredProjects
         this.extraParams['starred'] = true
         this.extraParams['needAuth'] = true
+        this.extraParams['membership'] = true
       } else {
         this.modeTitle = this.lang.yourProjects
         delete this.extraParams.starred
         this.extraParams['needAuth'] = true
+        this.extraParams['membership'] = true
       }
 
       let serviceFn = ProjectsService.getProjects.bind(ProjectsService)

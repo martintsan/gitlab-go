@@ -10,7 +10,7 @@ export default class ProjectsService extends Base {
     let needAuth = options.needAuth;
     delete options.needAuth;
     options = extend({
-      membership: needAuth,
+      membership: false,
       simple: true,
       order_by: 'last_activity_at'
     }, options);
