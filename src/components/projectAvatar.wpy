@@ -25,6 +25,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import { isEmpty } from '../utils/validate'
 export default class ProjectAvatar extends wepy.component {
   props = {
     item: {}
@@ -32,8 +33,10 @@ export default class ProjectAvatar extends wepy.component {
 
   methods = {
     imageError() {
-      delete this.item.avatar_url
-      this.$apply()
+      if (!isEmpty(this.item)) {
+        delete this.item.avatar_url
+        this.$apply()
+      }
     }
   }
 }

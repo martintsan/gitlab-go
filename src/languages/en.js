@@ -12,6 +12,7 @@ const en = {
   "idx-your-projects": "Yours",
   "idx-starred-projects": "Starred",
   "idx-public-projects": "Explore",
+  "idx-search-ph": "Search projects by name",
 
   "proj-detail-stars": "Stars",
   "proj-detail-issues": "Open Issues",

@@ -12,6 +12,7 @@ const en = {
   "idx-your-projects": "你的项目",
   "idx-starred-projects": "星标项目",
   "idx-public-projects": "公共项目",
+  "idx-search-ph": "搜索项目",
 
   "proj-detail-stars": "星标",
   "proj-detail-issues": "问题",

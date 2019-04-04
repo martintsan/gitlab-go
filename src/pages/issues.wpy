@@ -50,6 +50,16 @@
     font-size: 28rpx;
     box-sizing: border-box;
   }
+
+  .no-more {
+    margin: 30rpx 0;
+    color: #6b6b6b;
+    font-size: 28rpx;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 32rpx;
+  }
 }
 </style>
 <template>
