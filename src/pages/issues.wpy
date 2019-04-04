@@ -42,13 +42,22 @@
     }
   }
 
-  .none-default-proj {
+  .none-default-proj,
+  .set-default-proj {
     margin-top: 60rpx;
     text-align: center;
     width: 100%;
     color: #6b6b6b;
     font-size: 28rpx;
     box-sizing: border-box;
+  }
+
+  .set-default-proj {
+    .browse-project-button {
+      border: 1px solid #292961;
+      background-color: #292961;
+      color: white;
+    }
   }
 
   .no-more {
@@ -65,14 +74,17 @@
 <template>
 <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
 <view class="container" wx:else>
-  <view class="issues-filter">
-    <view class="project-name">{{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text></view>
-    <image class="filter-image" src="/images/options.png"></image>
-  </view>
   <view wx:if="{{ noneProject }}">
     <view class="none-default-proj">{{ lang.noneProj }}</view>
+    <view class="set-default-proj">
+      <button class="browse-project-button" size="mini" plain="true" @tap.stop="browseProject">{{ lang.browseProject }}</button>
+    </view>
   </view>
   <view wx:if="{{ !noneProject && issues.length > 0 }}">
+    <view class="issues-filter" >
+      <view class="project-name">{{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text></view>
+      <image class="filter-image" src="/images/options.png"></image>
+    </view>
     <view class="issues-list" wx:if="{{ mode === 'list' }}">
       <repeat for="{{ issues }}" key="index" index="index" item="item">
         <view class="issue-item-wrapper">
@@ -145,6 +157,7 @@ export default class IssuesPage extends BasePage {
     const t = wepy.i18n.translate
     this.lang.noneProj = t('issues-none-proj')
     this.lang.noMore = t('common-no-more')
+    this.lang.browseProject = t('issues-browse-project')
     if (!isEmpty(this.project)) {
       this.lang.title = t('issues-title', {
         project: this.project.name_with_namespace
@@ -164,6 +177,14 @@ export default class IssuesPage extends BasePage {
       this.issuesCount = issuesCount
     }
     this.loaded()
+  }
+
+  methods = {
+    browseProject() {
+      wepy.switchTab({
+        url: 'index'
+      })
+    }
   }
 
   events = {

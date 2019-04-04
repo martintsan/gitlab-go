@@ -24,6 +24,7 @@ const en = {
   "issues-title": "{project} 的问题",
   "issues-none-proj": "尚未设置首选项目",
   "issues-created-at": "{date}创建",
+  "issues-browse-project": "浏览项目",
 
   "me-member-since": "在 {date} 加入会员",
   "me-edit-profile": "编辑个人资料",

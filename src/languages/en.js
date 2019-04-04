@@ -24,6 +24,7 @@ const en = {
   "issues-title": "Issues of {project}",
   "issues-none-proj": "You haven't set default project yet.",
   "issues-created-at": "Created {date}",
+  "issues-browse-project": "Browse Project",
 
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",
