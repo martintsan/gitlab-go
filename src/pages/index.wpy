@@ -196,6 +196,10 @@ export default class IndexPage extends BasePage {
     ...this.def
   }
 
+  config = {
+    enablePullDownRefresh: true
+  }
+
   components = {
     loginModal: LoginModal,
     projectIndexItem: ProjectIndexItem,
@@ -216,6 +220,31 @@ export default class IndexPage extends BasePage {
     this.loaded()
   }
 
+  async onTabItemTap(e) {
+    if (isEmpty(this.currentUser)) {
+      this.logined = this.checkLoginStatus()
+      this.projects = []
+      await this.fetchData()
+      this.loaded()
+    }
+  }
+
+  onShow() {
+    this.logined = this.checkLoginStatus()
+    this.projects = this.projects.map((item) => {
+      item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+      return item
+    })
+    this.$apply()
+  }
+
+  async onPullDownRefresh() {
+    this.projects = []
+    await this.fetchData()
+    wx.stopPullDownRefresh()
+    this.loaded()
+  }
+
   async fetchData() {
     if (this.logined) {
       this.mode = 'your'
@@ -231,14 +260,6 @@ export default class IndexPage extends BasePage {
     let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
     let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
     this.projects = projects
-  }
-
-  onShow() {
-    this.projects = this.projects.map((item) => {
-      item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
-      return item
-    })
-    this.$apply()
   }
 
   setLang() {

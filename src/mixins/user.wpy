@@ -1,12 +1,12 @@
 <script>
 import wepy from 'wepy'
+import { isEmpty } from '../utils/validate'
 import UsersService from '../services/users'
 
 export default class User extends wepy.mixin {
   currentUser = {}
 
   async userLogin() {
-    this.currentUser = wepy.getStorageSync('CURRENT_USER')
     let loginStatus = this.checkLoginStatus()
     let privateToken = wepy.getStorageSync('GITLAB_PRIVATE_TOKEN')
     if (!loginStatus && privateToken) {
@@ -24,7 +24,8 @@ export default class User extends wepy.mixin {
   }
 
   checkLoginStatus() {
-    return this.currentUser && this.currentUser.id
+    this.currentUser = wepy.getStorageSync('CURRENT_USER')
+    return !isEmpty(this.currentUser)
   }
 }
 </script>
