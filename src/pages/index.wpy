@@ -143,13 +143,11 @@ export default class IndexPage extends BasePage {
     if (this.logined) {
       this.extraParams['needAuth'] = true
       delete this.extraParams.visibility
-      delete this.extraParams.order_by
     } else {
       this.mode = 'public'
       delete this.extraParams.starred
       this.extraParams['needAuth'] = false
       this.extraParams['visibility'] = 'public'
-      this.extraParams['order_by'] = 'updated_at'
     }
     let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
     let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
@@ -228,14 +226,11 @@ export default class IndexPage extends BasePage {
         delete this.extraParams.starred
         this.extraParams['needAuth'] = false
         this.extraParams['visibility'] = 'public'
-        this.extraParams['order_by'] = 'updated_at'
       } else if (mode === 'starred') {
-        delete this.extraParams.order_by
         delete this.extraParams.visibility
         this.extraParams['starred'] = true
         this.extraParams['needAuth'] = true
       } else {
-        delete this.extraParams.order_by
         delete this.extraParams.visibility
         delete this.extraParams.starred
         this.extraParams['needAuth'] = true
