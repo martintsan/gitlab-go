@@ -44,6 +44,11 @@ export default class extends wepy.app {
       }]
     },
     subPackages: [{
+      root: 'account',
+      pages: [
+        'login'
+      ]
+    }, {
       root: 'projects',
       pages: [
         'detail'

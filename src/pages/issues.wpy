@@ -72,15 +72,14 @@
 }
 </style>
 <template>
-<loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal>
-<view class="container" wx:else>
-  <view wx:if="{{ noneProject }}">
+<view class="container">
+  <view wx:if="{{ noneDefaultProject }}">
     <view class="none-default-proj">{{ lang.noneProj }}</view>
     <view class="set-default-proj">
       <button class="browse-project-button" size="mini" plain="true" @tap.stop="browseProject">{{ lang.browseProject }}</button>
     </view>
   </view>
-  <view wx:if="{{ !noneProject && issues.length > 0 }}">
+  <view wx:if="{{ !noneDefaultProject && issues.length > 0 }}">
     <view class="issues-filter" >
       <view class="project-name">{{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text></view>
       <image class="filter-image" src="/images/options.png"></image>
@@ -101,48 +100,53 @@ import wepy from 'wepy'
 import moment from 'moment'
 import BasePage from './base'
 import { isEmpty, extend } from '../utils/validate'
-import LoginModal from '../components/loginModal'
 import IssueListItem from '../components/issueListItem'
-import ProjectsService from '../services/projects'
 import IssuesService from '../services/issues'
 export default class IssuesPage extends BasePage {
   data = {
     mode: 'list', // list or board
     project: {},
     issues: [],
+    logined: false,
     issuesCount: 0,
-    noneProject: false,
+    noneDefaultProject: false,
     ...this.def
   }
 
   components = {
-    loginModal: LoginModal,
     issueListItem: IssueListItem
   }
 
-  async onShow() {
+  async onLoad() {
     await this.userLogin()
     this.hasPagination = true
-    let pid = wepy.getStorageSync('DEFAULT_PROJECT_ID')
-    this.noneProject = !pid
-    if (this.checkLoginStatus() && pid) {
-      let projectOptions = {
-        pid: pid
-      }
+    this.project = wepy.getStorageSync('DEFAULT_PROJECT')
+    this.noneDefaultProject = !this.project.id
+    this.logined = this.checkLoginStatus()
+    await this.fetchData()
+    this.setLang()
+    this.loaded()
+  }
+
+  onShow() {
+    this.project = wepy.getStorageSync('DEFAULT_PROJECT')
+    this.noneDefaultProject = !this.project.id
+    this.logined = this.checkLoginStatus()
+  }
+
+  async fetchData() {
+    if (this.logined && !this.noneDefaultProject) {
       let issuesOptions = {
-        pid: pid,
+        pid: this.project.id,
         page: 1,
         per_page: 20
       }
       this.extraParams = issuesOptions
       let issuesServiceFn = IssuesService.getProjectIssues.bind(IssuesService)
-      let [project, [issues, issuesCount]] = await Promise.all([ProjectsService.getProjectDetail(projectOptions), this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this.issues)])
-      this.project = project.data
+      let [[issues, issuesCount]] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this.issues)
       this.issues = issues
       this.issuesCount = issuesCount
     }
-    this.setLang()
-    this.loaded()
   }
 
   mapIssues(item) {

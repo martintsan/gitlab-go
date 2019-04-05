@@ -110,7 +110,8 @@ export default class LoginModal extends wepy.component {
           wepy.setStorageSync('CURRENT_USER', result.data)
           this.$emit('user-logined', result.data)
         } else {
-          this.showErrorMsg(result.data.message)
+          let message = result.data.message || result.data.error_description
+          this.showErrorMsg(message)
         }
         this.loaded()
       }

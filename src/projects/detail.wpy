@@ -144,6 +144,7 @@ export default class ProjectsDetail extends BasePage {
   data = {
     lang: {},
     project: {},
+    defaultProject: {},
     noReadme: false,
     logined: false,
     ...this.def
@@ -176,6 +177,10 @@ export default class ProjectsDetail extends BasePage {
     this.loaded()
   }
 
+  onShow() {
+    this.defaultProject = wepy.getStorageSync('DEFAULT_PROJECT')
+  }
+
   setLang() {
     const t = wepy.i18n.translate
     this.lang.stars = t('proj-detail-stars')
@@ -189,16 +194,16 @@ export default class ProjectsDetail extends BasePage {
 
   computed = {
     isDefaultProject() {
-      return this.project.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+      return this.project.id === this.defaultProject.id
     }
   }
 
   methods = {
     toggleDefaultProject() {
-      if (this.project.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')) {
-        wepy.removeStorageSync('DEFAULT_PROJECT_ID')
+      if (this.project.id === this.defaultProject.id) {
+        wepy.removeStorageSync('DEFAULT_PROJECT')
       } else {
-        wepy.setStorageSync('DEFAULT_PROJECT_ID', this.project.id)
+        wepy.setStorageSync('DEFAULT_PROJECT', this.project)
       }
       this.loaded()
     }

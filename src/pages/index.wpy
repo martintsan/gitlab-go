@@ -135,7 +135,6 @@
 }
 </style>
 <template>
-<!-- <loginModal wx:if="{{ !currentUser || !currentUser.id }}"></loginModal> -->
 <view class="container">
   <view class="projects-filter">
     <view class="filter {{ modesFilterOn ? 'active' : '' }}" @tap.stop="toggleModes">{{ modeTitle }}</view>
@@ -143,9 +142,6 @@
       <input value="{{ keyword }}" placeholder="{{ lang.searchPh }}" cursor-spacing="20" maxlength="30" confirm-type="search" bindinput="setKeyword" bindconfirm="searchProjects" />
       <image class="clear-btn" src="/images/clear.png" mode="aspectFit" @tap="clearSearch" wx:if="{{ keyword && keyword.length > 0 }}"></image>
     </view>
-    <!-- <view wx:if="{{ logined }}" class="filter your-projects {{ mode === 'your' ? 'active' : '' }}" @tap.stop="pickMode('your')">{{ lang.yourProjects }}</view>
-    <view wx:if="{{ logined }}" class="filter starred-projects {{ mode === 'starred' ? 'active' : '' }}" @tap.stop="pickMode('starred')">{{ lang.starredProjects }}</view>
-    <view class="filter public-projects {{ mode === 'public' ? 'active' : '' }} {{ !logined ? 'only' : '' }}" @tap.stop="pickMode('public')">{{ lang.publicProjects }}</view> -->
   </view>
   <view class="modes-wrapper" wx:if="{{ modesFilterOn }}" catchtouchmove="ture">
     <view class="modes-bg" @tap.stop="toggleModes"></view>
@@ -190,8 +186,10 @@ export default class IndexPage extends BasePage {
     mode: 'public',
     modeTitle: '',
     projects: [],
+    defaultProject: {},
     logined: false,
     modesFilterOn: false,
+    checkLoad: false,
     keyword: '',
     ...this.def
   }
@@ -216,23 +214,26 @@ export default class IndexPage extends BasePage {
       page: 1,
       per_page: 10
     }
+    this.initData()
     await this.fetchData()
     this.loaded()
   }
 
   async onTabItemTap(e) {
-    if (isEmpty(this.currentUser)) {
-      this.logined = this.checkLoginStatus()
+    if (this.checkLoad) {
       this.projects = []
+      this.initData()
       await this.fetchData()
       this.loaded()
     }
   }
 
   onShow() {
+    this.checkLoad = this.logined !== this.checkLoginStatus()
     this.logined = this.checkLoginStatus()
+    this.defaultProject = wepy.getStorageSync('DEFAULT_PROJECT')
     this.projects = this.projects.map((item) => {
-      item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+      item.isDefault = item.id === this.defaultProject.id
       return item
     })
     this.$apply()
@@ -240,23 +241,29 @@ export default class IndexPage extends BasePage {
 
   async onPullDownRefresh() {
     this.projects = []
+    this.initData()
     await this.fetchData()
     wx.stopPullDownRefresh()
     this.loaded()
   }
 
-  async fetchData() {
+  initData() {
     if (this.logined) {
       this.mode = 'your'
       this.modeTitle = this.lang.yourProjects
       this.extraParams['needAuth'] = true
+      this.extraParams['membership'] = true
     } else {
       this.mode = 'public'
       this.modeTitle = this.lang.publicProjects
       delete this.extraParams.starred
       delete this.extraParams.visibility
       this.extraParams['needAuth'] = false
+      this.extraParams['membership'] = false
     }
+  }
+
+  async fetchData() {
     let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
     let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
     this.projects = projects
@@ -274,12 +281,13 @@ export default class IndexPage extends BasePage {
 
   mapProjects(item) {
     const t = wepy.i18n.translate
+    const defaultProj = wepy.getStorageSync('DEFAULT_PROJECT')
     item.bgColor = LetterAvatar(item.name)
     item.upperFirstLetter = item.name[0].toUpperCase()
     item.lastUpdated = t('idx-last-updated', {
       date: moment(item.last_activity_at).fromNow()
     })
-    item.isDefault = item.id === wepy.getStorageSync('DEFAULT_PROJECT_ID')
+    item.isDefault = (item.id === defaultProj.id)
     return item
   }
 
@@ -288,6 +296,7 @@ export default class IndexPage extends BasePage {
       this.extraParams = extend(this.extraParams, {
         page: this.nextPage
       })
+      this.initData()
       await this.fetchData()
     }
     this.loaded()
@@ -343,6 +352,7 @@ export default class IndexPage extends BasePage {
       if (!isEmpty(this.keyword)) {
         this.projects = []
         this.extraParams['search'] = this.keyword
+        this.initData()
         await this.fetchData()
         this.loaded()
       }
@@ -352,6 +362,7 @@ export default class IndexPage extends BasePage {
       this.projects = []
       this.keyword = ''
       delete this.extraParams.search
+      this.initData()
       await this.fetchData()
       this.loaded()
     }
@@ -366,6 +377,7 @@ export default class IndexPage extends BasePage {
           page: 1,
           per_page: 10
         }
+        this.initData()
         await this.fetchData()
       }
       this.loaded()

@@ -1,0 +1,14 @@
+<style lang='scss'>
+</style>
+<template>
+<loginModal></loginModal>
+</template>
+<script>
+import wepy from 'wepy'
+import LoginModal from '../components/loginModal'
+export default class AccountLogin extends wepy.page {
+  components = {
+    loginModal: LoginModal
+  }
+}
+</script>

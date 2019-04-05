@@ -31,6 +31,9 @@ export default class BasePage extends wepy.page {
       } else {
         allItems = items
       }
+    } else {
+      let message = result.data.message || result.data.error_description
+      this.showErrorMsg(message)
     }
     return [allItems, result.header['X-Total']]
   }
