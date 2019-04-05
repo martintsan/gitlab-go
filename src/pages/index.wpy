@@ -212,9 +212,13 @@ export default class IndexPage extends BasePage {
     this.logined = this.checkLoginStatus()
     this.extraParams = {
       page: 1,
-      per_page: 10
+      per_page: 50
     }
     this.initData()
+    if (!this.logined) {
+      this.keyword = 'gitlab'
+      this.extraParams['search'] = this.keyword
+    }
     await this.fetchData()
     this.loaded()
   }
@@ -314,7 +318,7 @@ export default class IndexPage extends BasePage {
       this.modesFilterOn = !this.modesFilterOn
       this.extraParams = {
         page: 1,
-        per_page: 10
+        per_page: 50
       }
       this.projects = []
       if (mode === 'public') {
@@ -375,7 +379,7 @@ export default class IndexPage extends BasePage {
         this.projects = []
         this.extraParams = {
           page: 1,
-          per_page: 10
+          per_page: 50
         }
         this.initData()
         await this.fetchData()

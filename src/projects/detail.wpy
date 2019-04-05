@@ -121,7 +121,7 @@
       <view class="name">{{ lang.default }}</view>
       <view class="desc">{{ lang.defaultDesc }}</view>
     </view>
-    <radio checked="{{ isDefaultProject }}" @tap.stop="toggleDefaultProject" />
+    <radio checked="{{ project.id && isDefaultProject }}" @tap.stop="toggleDefaultProject" />
   </label>
 </view>
 <view class="hr"></view>

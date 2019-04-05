@@ -11,7 +11,6 @@ export default class ProjectsService extends Base {
     delete options.needAuth;
     options = extend({
       membership: false,
-      simple: true,
       order_by: 'last_activity_at'
     }, options);
 
