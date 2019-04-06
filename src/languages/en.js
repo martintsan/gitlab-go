@@ -21,7 +21,7 @@ const en = {
   "proj-detail-default": "Set as default project",
   "proj-detail-default-desc": "Issues tab will show default project issues",
 
-  "issues-title": "Issues of {project}",
+  "issues-title": "Issues",
   "issues-none-proj": "You haven't set default project yet.",
   "issues-created-at": "Created {date}",
   "issues-browse-project": "Browse Project",

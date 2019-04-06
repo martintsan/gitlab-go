@@ -18,8 +18,16 @@
     top: 0;
     left: 0;
 
-    .project-name {
+    .issue-title {
       font-weight: bold;
+      display: flex;
+      flex-flow: column;
+      align-items: flex-start;
+
+      .project-name {
+        font-size: 26rpx;
+        color: #6b6b6b;
+      }
     }
 
     .filter-image {
@@ -32,7 +40,7 @@
   .issues-list {
     padding: 0 32rpx;
     font-size: 28rpx;
-    margin-top: 120rpx;
+    margin-top: 140rpx;
 
     .issue-item-wrapper {
       width: 100%;
@@ -81,7 +89,12 @@
   </view>
   <view wx:if="{{ !noneDefaultProject && issues.length > 0 }}">
     <view class="issues-filter" >
-      <view class="project-name">{{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text></view>
+      <view class="issue-title">
+        <view class="count">
+          {{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text>
+        </view>
+        <view class="project-name">{{ project.name_with_namespace }}</view>
+      </view>
       <image class="filter-image" src="/images/options.png"></image>
     </view>
     <view class="issues-list" wx:if="{{ mode === 'list' }}">

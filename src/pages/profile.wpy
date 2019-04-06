@@ -47,6 +47,14 @@
       margin-right: 32rpx;
     }
   }
+
+  .version {
+    width: 100%;
+    margin-top: 60rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #6b6b6b;
+  }
 }
 </style>
 <template>
@@ -65,6 +73,7 @@
     <button plain="true" size="mini" class="edit-profile-button">{{ lang.edit }}</button>
     <button plain="true" size="mini" class="logout-button" @tap.stop="logout">{{ lang.logout }}</button>
   </view>
+  <view class="version">v1.0.2</view>
 </view>
 </template>
 <script>
