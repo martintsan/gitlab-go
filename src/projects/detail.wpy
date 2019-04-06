@@ -202,8 +202,10 @@ export default class ProjectsDetail extends BasePage {
     toggleDefaultProject() {
       if (this.project.id === this.defaultProject.id) {
         wepy.removeStorageSync('DEFAULT_PROJECT')
+        this.defaultProject = {}
       } else {
         wepy.setStorageSync('DEFAULT_PROJECT', this.project)
+        this.defaultProject = this.project
       }
       this.loaded()
     }

@@ -235,6 +235,10 @@ export default class IndexPage extends BasePage {
   onShow() {
     this.checkLoad = this.logined !== this.checkLoginStatus()
     this.logined = this.checkLoginStatus()
+    if (!this.logined) {
+      this.keyword = 'gitlab'
+      this.extraParams['search'] = this.keyword
+    }
     this.defaultProject = wepy.getStorageSync('DEFAULT_PROJECT')
     this.projects = this.projects.map((item) => {
       item.isDefault = item.id === this.defaultProject.id

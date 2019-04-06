@@ -143,7 +143,7 @@ export default class IssuesPage extends BasePage {
       }
       this.extraParams = issuesOptions
       let issuesServiceFn = IssuesService.getProjectIssues.bind(IssuesService)
-      let [[issues, issuesCount]] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this.issues)
+      let [issues, issuesCount] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this.issues)
       this.issues = issues
       this.issuesCount = issuesCount
     }
