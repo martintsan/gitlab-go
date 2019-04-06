@@ -79,7 +79,7 @@
   <view class="id-and-tags">
     <view class="issue-id">#{{ item.iid }}</view>
     <repeat for="{{ item.labels }}" key="labelIndex" index="labelIndex" item="label">
-      <view class="label-item">{{ label }}</view>
+      <view class="label-item" style="background-color: {{ label.color }}; color: {{ label.text_color }};">{{ label.name }}</view>
     </repeat>
   </view>
   <view class="created_at">

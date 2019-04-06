@@ -135,6 +135,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import * as _ from 'lodash'
 import BasePage from '../pages/base'
 import { isEmpty } from '../utils/validate'
 import LetterAvatar from '../utils/letter-avatar'
@@ -160,7 +161,11 @@ export default class ProjectsDetail extends BasePage {
     this.hasPagination = true
     this.logined = this.checkLoginStatus()
     let serviceFn = ProjectsService.getProjectDetail.bind(ProjectsService)
-    let [[project], readme] = await Promise.all([this.loadData(serviceFn, options, null), ProjectsService.getProjectReadme(options)])
+    let [[project], readme, labels] = await Promise.all([
+      this.loadData(serviceFn, options, null),
+      ProjectsService.getProjectReadme(options),
+      ProjectsService.getProjectLabels(options)
+    ])
     if (!isEmpty(project) && project.name) {
       project.bgColor = LetterAvatar(project.name)
       project.upperFirstLetter = project.name[0].toUpperCase()
@@ -172,6 +177,9 @@ export default class ProjectsDetail extends BasePage {
       project.readmeRAW = readmeRAW
     } else {
       this.noReadme = true
+    }
+    if (labels && labels.status && labels.data) {
+      project.labels = _.mapKeys(labels.data, (item) => item.name)
     }
     this.project = project
     this.loaded()

@@ -273,7 +273,7 @@ export default class IndexPage extends BasePage {
 
   async fetchData() {
     let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-    let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+    let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this, this.projects)
     this.projects = projects
   }
 
@@ -344,7 +344,7 @@ export default class IndexPage extends BasePage {
       }
 
       let serviceFn = ProjectsService.getProjects.bind(ProjectsService)
-      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this.projects)
+      let [projects] = await this.loadData(serviceFn, this.extraParams, this.mapProjects, this, this.projects)
       this.projects = projects
 
       this.loaded()

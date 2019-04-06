@@ -46,7 +46,10 @@ export default class ProjectsService extends Base {
   static async getProjectLabels(options) {
     let url = `${this.baseUrl}/projects/${options.pid}/labels`;
     let params = {
-      method: 'GET'
+      method: 'GET',
+      data: {
+        per_page: 100
+      }
     }
     return await this.doAPI(url, params, true);
   }

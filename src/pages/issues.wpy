@@ -88,7 +88,7 @@
     </view>
   </view>
   <view wx:if="{{ !noneDefaultProject && issues.length > 0 }}">
-    <view class="issues-filter" >
+    <view class="issues-filter">
       <view class="issue-title">
         <view class="count">
           {{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text>
@@ -152,11 +152,11 @@ export default class IssuesPage extends BasePage {
       let issuesOptions = {
         pid: this.project.id,
         page: 1,
-        per_page: 20
+        per_page: 50
       }
       this.extraParams = issuesOptions
       let issuesServiceFn = IssuesService.getProjectIssues.bind(IssuesService)
-      let [issues, issuesCount] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this.issues)
+      let [issues, issuesCount] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this, this.issues)
       this.issues = issues
       this.issuesCount = issuesCount
     }
@@ -167,6 +167,12 @@ export default class IssuesPage extends BasePage {
     item.created = t('issues-created-at', {
       date: moment(item.created_at).fromNow()
     })
+    // console.log(this.project)
+    if (this.project.labels) {
+      item.labels = item.labels.map((label) => {
+        return this.project.labels[label] || {}
+      })
+    }
     return item
   }
 
@@ -189,7 +195,7 @@ export default class IssuesPage extends BasePage {
         page: this.nextPage
       })
       let issuesServiceFn = IssuesService.getProjectIssues.bind(IssuesService)
-      let [issues, issuesCount] = await this.loadData(issuesServiceFn, params, this.mapIssues, this.issues)
+      let [issues, issuesCount] = await this.loadData(issuesServiceFn, params, this.mapIssues, this, this.issues)
       this.issues = issues
       this.issuesCount = issuesCount
     }

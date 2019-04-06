@@ -21,9 +21,12 @@ export default class BasePage extends wepy.page {
     this.def.locale = wepy.i18n.locale
   }
 
-  async loadData(serviceFn, params, mapFn, allItems) {
+  async loadData(serviceFn, params, mapFn, page, allItems) {
     let result = await serviceFn(params)
     if (result.status) {
+      if (page) {
+        mapFn = mapFn.bind(page)
+      }
       let items = mapFn && (typeof mapFn === 'function') ? result.data.map(mapFn) : result.data
       if (this.hasPagination && allItems) {
         allItems = this.getPaginationData(allItems, items, result.header['X-Page'])
