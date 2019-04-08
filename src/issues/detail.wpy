@@ -1,0 +1,24 @@
+<style lang='scss'>
+</style>
+<template lang="wxml">
+<view class="container">
+  <view class="issue-info">
+    <view class="issue-name">{{ issue.name }}</view>
+  </view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+import * as _ from 'lodash'
+import BasePage from '../pages/base'
+export default class IssuesDetail extends BasePage {
+  data = {
+    issue: {},
+    ...def
+  }
+
+  async onLoad(options) {
+
+  }
+}
+</script>
