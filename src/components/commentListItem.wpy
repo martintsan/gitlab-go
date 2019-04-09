@@ -1,7 +1,52 @@
 <style lang='scss'>
+.comment-list-item {
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  padding-bottom: 24rpx;
+
+  .author {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    .avatar-image {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 40rpx;
+      margin-right: 20rpx;
+    }
+
+    .updated_at {
+      font-size: 24rpx;
+      color: #707070;
+    }
+  }
+
+  .author-system {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+  }
+
+  .author-updated {
+    font-size: 24rpx;
+    color: #707070;
+  }
+}
 </style>
 <template>
-<view class="comment-list-item">
+<view class="comment-list-item" wx:if="{{ item.system }}">
+  <view class="author-system">
+    <view class="author-name">{{ item.author.name }} {{ item.body }}</view>
+  </view>
+  <view class="author-updated">{{ item.updated }}</view>
+</view>
+<view class="comment-list-item" wx:else>
   <view class="author">
     <image class="avatar-image" src="{{ item.author.avatar_url }}"></image>
     <view class="info">
