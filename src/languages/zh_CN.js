@@ -23,6 +23,7 @@ const en = {
 
   "issues-title": "问题列表",
   "issues-none-proj": "尚未设置首选项目",
+  "issues-none-issues": "当前项目还没有创建问题",
   "issues-created-at": "{date}创建",
   "issues-browse-project": "浏览项目",
 

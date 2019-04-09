@@ -14,7 +14,7 @@ import BasePage from '../pages/base'
 export default class IssuesDetail extends BasePage {
   data = {
     issue: {},
-    ...def
+    ...this.def
   }
 
   async onLoad(options) {

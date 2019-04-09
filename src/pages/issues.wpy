@@ -52,7 +52,7 @@
 
   .none-default-proj,
   .set-default-proj {
-    margin-top: 60rpx;
+    margin-top: 160rpx;
     text-align: center;
     width: 100%;
     color: #6b6b6b;
@@ -87,7 +87,7 @@
       <button class="browse-project-button" size="mini" plain="true" @tap.stop="browseProject">{{ lang.browseProject }}</button>
     </view>
   </view>
-  <view wx:if="{{ !noneDefaultProject && issues.length > 0 }}">
+  <view wx:else>
     <view class="issues-filter">
       <view class="issue-title">
         <view class="count">
@@ -97,14 +97,21 @@
       </view>
       <image class="filter-image" src="/images/options.png"></image>
     </view>
-    <view class="issues-list" wx:if="{{ mode === 'list' }}">
-      <repeat for="{{ issues }}" key="index" index="index" item="item">
-        <view class="issue-item-wrapper">
-          <issueListItem :item.sync="item"></issueListItem>
-        </view>
-      </repeat>
+    <view wx:if="{{ issues.length === 0 }}">
+      <view class="none-default-proj">{{ lang.noneIssues }}</view>
     </view>
-    <view class="no-more" wx:if="{{ issues.length > 0 && noMore }}">{{ lang.noMore }}</view>
+    <view wx:else>
+      <view class="issues-list" wx:if="{{ mode === 'list' }}">
+        <repeat for="{{ issues }}" key="index" index="index" item="item">
+          <navigator url="/issues/detail?" hover-class="none">
+            <view class="issue-item-wrapper">
+              <issueListItem :item.sync="item"></issueListItem>
+            </view>
+          </navigator>
+        </repeat>
+      </view>
+      <view class="no-more" wx:if="{{ issues.length > 0 && noMore }}">{{ lang.noMore }}</view>
+    </view>
   </view>
 </view>
 </template>
@@ -123,6 +130,8 @@ export default class IssuesPage extends BasePage {
     logined: false,
     issuesCount: 0,
     noneDefaultProject: false,
+    checkLoad: false,
+    changedProject: false,
     ...this.def
   }
 
@@ -142,9 +151,19 @@ export default class IssuesPage extends BasePage {
   }
 
   onShow() {
-    this.project = wepy.getStorageSync('DEFAULT_PROJECT')
+    let project = wepy.getStorageSync('DEFAULT_PROJECT')
+    this.checkLoad = this.logined !== this.checkLoginStatus()
+    this.changedProject = this.project.id !== project.id
+    this.project = project
     this.noneDefaultProject = !this.project.id
     this.logined = this.checkLoginStatus()
+  }
+
+  async onTabItemTap(e) {
+    if (this.checkLoad || this.changedProject) {
+      await this.fetchData()
+      this.loaded()
+    }
   }
 
   async fetchData() {
@@ -179,6 +198,7 @@ export default class IssuesPage extends BasePage {
   setLang() {
     const t = wepy.i18n.translate
     this.lang.noneProj = t('issues-none-proj')
+    this.lang.noneIssues = t('issues-none-issues')
     this.lang.noMore = t('common-no-more')
     this.lang.browseProject = t('issues-browse-project')
     if (!isEmpty(this.project)) {

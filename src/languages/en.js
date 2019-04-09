@@ -23,6 +23,7 @@ const en = {
 
   "issues-title": "Issues",
   "issues-none-proj": "You haven't set default project yet.",
+  "issues-none-issues": "There is no issues in the current project",
   "issues-created-at": "Created {date}",
   "issues-browse-project": "Browse Project",
 
