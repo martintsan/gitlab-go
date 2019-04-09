@@ -1,0 +1,21 @@
+<style lang='scss'>
+</style>
+<template>
+<view class="comment-list-item">
+  <view class="author">
+    <image class="avatar-image" src="{{ item.author.avatar_url }}"></image>
+    <view class="info">
+      <view class="author-name">{{ item.author.name }}</view>
+      <view class="updated_at">{{ item.updated }}</view>
+    </view>
+  </view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class CommentListItem extends wepy.component {
+  props = {
+    item: {}
+  }
+}
+</script>

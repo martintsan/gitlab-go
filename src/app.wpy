@@ -56,7 +56,8 @@ export default class extends wepy.app {
     }, {
       root: 'issues',
       pages: [
-        'detail'
+        'detail',
+        'comments'
       ]
     }]
   }

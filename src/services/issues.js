@@ -19,4 +19,20 @@ export default class IssuesService extends Base {
     }
     return await this.doAPI(url, params, true);
   }
+
+  static async getIssueDetail(options) {
+    let url = `${this.baseUrl}/projects/${options.pid}/issues/${options.issue_iid}`;
+    let params = {
+      method: 'GET'
+    }
+    return await this.doAPI(url, params, true);
+  }
+
+  static async getIssueNotes(options) {
+    let url = `${this.baseUrl}/projects/${options.pid}/issues/${options.issue_iid}/notes`;
+    let params = {
+      method: 'GET'
+    }
+    return await this.doAPI(url, params, true);
+  }
 }

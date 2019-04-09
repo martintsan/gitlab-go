@@ -1,24 +1,172 @@
 <style lang='scss'>
+@import './towxml/style/main.wxss';
+@import './towxml/style/theme/light.wxss';
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32rpx;
+
+  .issue-info {
+    width: 100%;
+    margin-bottom: 20rpx;
+    background-color: white;
+    font-size: 30rpx;
+
+    .issue-title {
+      font-weight: bold;
+
+      .issue-id {
+        color: #707070;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .id-and-tags {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20rpx;
+
+    .issue-id {
+      color: #707070;
+      font-weight: 400;
+    }
+
+    .label-item {
+      height: 40rpx;
+      font-size: 24rpx;
+      line-height: 38rpx;
+      padding: 0 16rpx;
+      display: inline-block;
+      background-color: #292961;
+      color: white;
+      border-radius: 20rpx;
+      margin-right: 10rpx;
+    }
+  }
+
+  .assignee-info {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    text-align: left;
+    justify-content: space-between;
+    font-size: 24rpx;
+    color: #707070;
+
+    .avatar-image {
+      width: 48rpx;
+      height: 48rpx;
+      border-radius: 24rpx;
+      margin-right: 20rpx;
+    }
+
+    .assignee {
+      flex-grow: 1;
+    }
+
+    .comments {
+      flex-shrink: 1;
+      display: inline-flex;
+      align-items: center;
+
+      .icon-small {
+        width: 36rpx;
+        height: 36rpx;
+        margin-right: 10rpx;
+      }
+    }
+  }
+}
 </style>
-<template lang="wxml">
+<template lang='wxml'>
 <view class="container">
-  <view class="issue-info">
-    <view class="issue-name">{{ issue.name }}</view>
+  <view class="issue-info" wx:if="{{ issue.id }}">
+    <view class="issue-title">
+      <text class="issue-id">#{{ issue.iid }}</text> {{ issue.title }}
+    </view>
   </view>
+  <view class="id-and-tags">
+    <repeat for="{{ issue.labels }}" key="labelIndex" index="labelIndex" item="label">
+      <view class="label-item" style="background-color: {{ label.color }}; color: {{ label.text_color }};">{{ label.name }}</view>
+    </repeat>
+  </view>
+  <view class="assignee-info">
+    <image class="avatar-image" src="{{ issue.assignee.avatar_url }}"></image>
+    <view class="assignee">{{ issue.created }}</view>
+    <view class="comments" @tap.stop="goToNotes"><image class="icon-small" src="/images/notes.png"></image> {{ lang.notes }}</view>
+  </view>
+</view>
+<view class="hr"></view>
+<view wx:if="{{ issue.descRAW }}">
+  <import src="./towxml/entry.wxml"/>
+  <template is="entry" data="{{...issue.descRAW}}"/>
 </view>
 </template>
 <script>
 import wepy from 'wepy'
-import * as _ from 'lodash'
+import moment from 'moment'
 import BasePage from '../pages/base'
+import IssuesService from '../services/issues'
 export default class IssuesDetail extends BasePage {
   data = {
+    project: {},
     issue: {},
     ...this.def
   }
 
   async onLoad(options) {
+    const page = this
+    await this.userLogin()
+    this.setLang()
+    this.hasPagination = false
+    this.project = wepy.getStorageSync('DEFAULT_PROJECT')
+    let serviceFn = IssuesService.getIssueDetail.bind(IssuesService)
+    let issue = await this.loadData(serviceFn, options)
+    issue.created = wepy.i18n.translate('issues-created-at', {
+      date: moment(issue.created_at).fromNow()
+    })
+    if (this.project.labels) {
+      issue.labels = issue.labels.map((label) => {
+        return this.project.labels[label] || {}
+      })
+    }
+    let urlPrefix = issue.web_url.split('issues')[0]
+    if (issue.description) {
+      // issue.description = this.replaceImage(urlPrefix, issue.description)
+      let descRAW = wepy.towxml.toJson(issue.description, 'markdown')
+      descRAW = wepy.towxml.initData(descRAW, {
+        base: urlPrefix,
+        app: page
+      })
+      descRAW.theme = 'light'
+      issue.descRAW = descRAW
+    }
+    this.issue = issue
+    this.loaded()
+  }
 
+  // replaceImage(prefix, desc) {
+  //   let pattern = /\/uploads\/(.*)/ig
+  //   return desc.replace(pattern, prefix + 'uploads/$1')
+  // }
+
+  setLang() {
+    const t = wepy.i18n.translate
+    this.lang.notes = t('issue-detail-notes')
+    this.$apply()
+  }
+
+  methods = {
+    goToNotes() {
+      wepy.navigateTo({
+        url: `comments?pid=${this.project.id}&issue_iid=${this.issue.iid}`
+      })
+    }
   }
 }
 </script>

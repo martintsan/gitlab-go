@@ -1,0 +1,55 @@
+<style lang='scss'>
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32rpx;
+}
+</style>
+<template lang='wxml'>
+<view class="container">
+  <repeat for="{{ comments }}" key="index" index="index" item="item">
+    {{ item.author.name }}
+  </repeat>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+import moment from 'moment'
+import { extend } from '../utils/validate'
+import BasePage from '../pages/base'
+import IssuesService from '../services/issues'
+export default class IssuesComments extends BasePage {
+  data = {
+    project: {},
+    comments: [],
+    commentsCount: 0,
+    ...this.def
+  }
+
+  async onLoad(options) {
+    await this.userLogin()
+    this.hasPagination = true
+    this.project = wepy.getStorageSync('DEFAULT_PROJECT')
+    this.extraParams = extend(options, {
+      page: 1,
+      per_page: 50
+    })
+    await this.fetchData()
+  }
+
+  async fetchData() {
+    let serviceFn = IssuesService.getIssueNotes.bind(IssuesService)
+    let [comments, commentsCount] = await this.loadData(serviceFn, this.extraParams, this.mapComment, this, this.comments)
+    this.comments = comments
+    this.commentsCount = commentsCount
+    this.loaded()
+  }
+
+  mapComment(item) {
+    item.updated = wepy.i18n.translate('issue-notes-updated', {
+      date: moment(item.updated_at).fromNow()
+    })
+    return item
+  }
+}
+</script>

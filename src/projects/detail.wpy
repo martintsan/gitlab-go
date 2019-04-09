@@ -143,7 +143,6 @@ import ProjectAvatar from '../components/projectAvatar'
 import ProjectsService from '../services/projects'
 export default class ProjectsDetail extends BasePage {
   data = {
-    lang: {},
     project: {},
     defaultProject: {},
     noReadme: false,
@@ -158,10 +157,10 @@ export default class ProjectsDetail extends BasePage {
   async onLoad(options) {
     await this.userLogin()
     this.setLang()
-    this.hasPagination = true
+    this.hasPagination = false
     this.logined = this.checkLoginStatus()
     let serviceFn = ProjectsService.getProjectDetail.bind(ProjectsService)
-    let [[project], readme, labels] = await Promise.all([
+    let [project, readme, labels] = await Promise.all([
       this.loadData(serviceFn, options, null),
       ProjectsService.getProjectReadme(options),
       ProjectsService.getProjectLabels(options)

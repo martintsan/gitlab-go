@@ -38,7 +38,7 @@ export default class BasePage extends wepy.page {
       let message = result.data.message || result.data.error_description
       this.showErrorMsg(message)
     }
-    return [allItems, result.header['X-Total']]
+    return this.hasPagination ? [allItems, result.header['X-Total']] : allItems
   }
 }
 </script>

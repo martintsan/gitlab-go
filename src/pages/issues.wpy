@@ -103,7 +103,7 @@
     <view wx:else>
       <view class="issues-list" wx:if="{{ mode === 'list' }}">
         <repeat for="{{ issues }}" key="index" index="index" item="item">
-          <navigator url="/issues/detail?" hover-class="none">
+          <navigator url="/issues/detail?pid={{ project.id }}&&issue_iid={{ item.iid }}" hover-class="none">
             <view class="issue-item-wrapper">
               <issueListItem :item.sync="item"></issueListItem>
             </view>
@@ -135,6 +135,10 @@ export default class IssuesPage extends BasePage {
     ...this.def
   }
 
+  config = {
+    enablePullDownRefresh: true
+  }
+
   components = {
     issueListItem: IssueListItem
   }
@@ -157,6 +161,14 @@ export default class IssuesPage extends BasePage {
     this.project = project
     this.noneDefaultProject = !this.project.id
     this.logined = this.checkLoginStatus()
+  }
+
+  async onPullDownRefresh() {
+    this.issues = []
+    this.issuesCount = 0
+    await this.fetchData()
+    wx.stopPullDownRefresh()
+    this.loaded()
   }
 
   async onTabItemTap(e) {
@@ -201,11 +213,7 @@ export default class IssuesPage extends BasePage {
     this.lang.noneIssues = t('issues-none-issues')
     this.lang.noMore = t('common-no-more')
     this.lang.browseProject = t('issues-browse-project')
-    if (!isEmpty(this.project)) {
-      this.lang.title = t('issues-title', {
-        project: this.project.name_with_namespace
-      })
-    }
+    this.lang.title = t('issues-title')
     this.$apply()
   }
 

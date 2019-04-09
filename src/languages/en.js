@@ -27,6 +27,9 @@ const en = {
   "issues-created-at": "Created {date}",
   "issues-browse-project": "Browse Project",
 
+  "issue-detail-notes": "Comments",
+  "issue-notes-updated": "Updated {date}",
+
   "me-member-since": "Member since {date}",
   "me-edit-profile": "Edit Profile",
   "me-logout": "Logout"
