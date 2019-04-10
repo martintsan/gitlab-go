@@ -37,9 +37,7 @@ export default class IssuesComments extends BasePage {
     this.project = wepy.getStorageSync('DEFAULT_PROJECT')
     this.extraParams = extend(options, {
       page: 1,
-      per_page: 50,
-      sort: 'asc',
-      order_by: 'updated_at'
+      per_page: 50
     })
     await this.fetchData()
   }
