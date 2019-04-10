@@ -31,7 +31,8 @@ export default class IssuesService extends Base {
   static async getIssueNotes(options) {
     let url = `${this.baseUrl}/projects/${options.pid}/issues/${options.issue_iid}/notes`;
     let params = {
-      method: 'GET'
+      method: 'GET',
+      data: options
     }
     return await this.doAPI(url, params, true);
   }

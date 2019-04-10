@@ -1,4 +1,7 @@
 <style lang='scss'>
+@import '../issues/towxml/style/main.wxss';
+@import '../issues/towxml/style/theme/light.wxss';
+
 .comment-list-item {
   background-size: cover;
   background-position: center;
@@ -8,49 +11,102 @@
   font-size: 28rpx;
   box-sizing: border-box;
   padding-bottom: 24rpx;
+  border: 1px solid #e5e5e5;
+  border-radius: 8rpx;
+  padding: 32rpx;
+  margin: 32rpx 0;
+
+  &.comment-list-item-system {
+    border: none;
+    margin: 16rpx 0;
+    padding: 16rpx;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
 
   .author {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
+    align-items: flex-start;
+
+    .system-comment {
+      border: 1px solid #c4c4c4;
+      border-radius: 50%;
+      min-width: 60rpx;
+      width: 60rpx;
+      height: 60rpx;
+      margin-right: 20rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .system-comment-image {
+        width: 40rpx;
+        height: 40rpx;
+      }
+    }
 
     .avatar-image {
-      width: 80rpx;
-      height: 80rpx;
+      min-width: 64rpx;
+      width: 64rpx;
+      height: 64rpx;
       border-radius: 40rpx;
       margin-right: 20rpx;
     }
 
-    .updated_at {
-      font-size: 24rpx;
-      color: #707070;
+    .info {
+      .author-name {
+        font-size: 26rpx;
+
+        .username {
+          color: #707070;
+        }
+      }
+
+      .comment-body {
+        font-size: 24rpx;
+        color: #707070;
+        margin-top: 10rpx;
+
+        .h2w__main {
+          margin: 0;
+          font-size: 24rpx;
+        }
+      }
+
+      .updated_at {
+        margin-top: 10rpx;
+        font-size: 22rpx;
+        color: #919191;
+      }
     }
-  }
-
-  .author-system {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-  }
-
-  .author-updated {
-    font-size: 24rpx;
-    color: #707070;
   }
 }
 </style>
 <template>
-<view class="comment-list-item" wx:if="{{ item.system }}">
-  <view class="author-system">
-    <view class="author-name">{{ item.author.name }} {{ item.body }}</view>
+<view class="comment-list-item comment-list-item-system" wx:if="{{ item.system }}">
+  <view class="author">
+    <view class="system-comment">
+      <image class="system-comment-image" src="/images/system-comment.png"></image>
+    </view>
+    <view class="info">
+      <view class="author-name">{{ item.author.name }} <text class="username">@{{ item.author.username }}</text></view>
+      <view class="comment-body">{{ item.body }}</view>
+      <view class="updated_at">{{ item.updated }}</view>
+    </view>
   </view>
-  <view class="author-updated">{{ item.updated }}</view>
 </view>
 <view class="comment-list-item" wx:else>
   <view class="author">
     <image class="avatar-image" src="{{ item.author.avatar_url }}"></image>
     <view class="info">
-      <view class="author-name">{{ item.author.name }}</view>
+      <view class="author-name">{{ item.author.name }} <text class="username">@{{ item.author.username }}</text></view>
+      <view class="comment-body" wx:if="{{ item.bodyRAW }}">
+        <import src="../issues/towxml/entry.wxml"/>
+        <template is="entry" data="{{...item.bodyRAW}}"/>
+      </view>
       <view class="updated_at">{{ item.updated }}</view>
     </view>
   </view>

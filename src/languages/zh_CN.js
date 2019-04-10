@@ -28,6 +28,7 @@ const en = {
   "issues-browse-project": "浏览项目",
 
   "issue-detail-notes": "问题评论",
+  "issue-no-content": "没有内容",
   "issue-notes-updated": "更新于 {date}",
 
   "me-member-since": "在 {date} 加入会员",

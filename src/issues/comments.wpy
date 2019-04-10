@@ -38,6 +38,7 @@ export default class IssuesComments extends BasePage {
     this.extraParams = extend(options, {
       page: 1,
       per_page: 50,
+      sort: 'asc',
       order_by: 'updated_at'
     })
     await this.fetchData()
@@ -55,6 +56,15 @@ export default class IssuesComments extends BasePage {
     item.updated = wepy.i18n.translate('issue-notes-updated', {
       date: moment(item.updated_at).fromNow()
     })
+    if (item.body) {
+      let bodyRAW = wepy.towxml.toJson(item.body, 'markdown')
+      bodyRAW = wepy.towxml.initData(bodyRAW, {
+        base: 'https://gitlab.com/diningcity/product',
+        app: this
+      })
+      bodyRAW.theme = 'light'
+      item.bodyRAW = bodyRAW
+    }
     return item
   }
 }

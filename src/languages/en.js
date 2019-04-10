@@ -28,6 +28,7 @@ const en = {
   "issues-browse-project": "Browse Project",
 
   "issue-detail-notes": "Comments",
+  "issue-no-content": "No content",
   "issue-notes-updated": "Updated {date}",
 
   "me-member-since": "Member since {date}",

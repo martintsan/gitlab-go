@@ -82,6 +82,13 @@
     }
   }
 }
+
+.no-content {
+  color: #707070;
+  margin-top: 40rpx;
+  font-size: 28rpx;
+  text-align: center;
+}
 </style>
 <template lang='wxml'>
 <view class="container">
@@ -105,6 +112,9 @@
 <view wx:if="{{ issue.descRAW }}">
   <import src="./towxml/entry.wxml"/>
   <template is="entry" data="{{...issue.descRAW}}"/>
+</view>
+<view wx:else>
+  <view class="no-content">{{ lang.noContent }}</view>
 </view>
 </template>
 <script>
@@ -158,6 +168,7 @@ export default class IssuesDetail extends BasePage {
   setLang() {
     const t = wepy.i18n.translate
     this.lang.notes = t('issue-detail-notes')
+    this.lang.noContent = t('issue-no-content')
     this.$apply()
   }
 
