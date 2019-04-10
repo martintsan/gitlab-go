@@ -72,7 +72,7 @@
 
         .h2w__main {
           margin: 0;
-          font-size: 24rpx;
+          font-size: 26rpx;
         }
       }
 
