@@ -83,6 +83,13 @@
   }
 }
 
+.issue-desc {
+  .h2w__main {
+    margin: 0 32rpx;
+    font-size: 26rpx;
+  }
+}
+
 .no-content {
   color: #707070;
   margin-top: 40rpx;
@@ -109,7 +116,7 @@
   </view>
 </view>
 <view class="hr"></view>
-<view wx:if="{{ issue.descRAW }}">
+<view class="issue-desc" wx:if="{{ issue.descRAW }}">
   <import src="./towxml/entry.wxml"/>
   <template is="entry" data="{{...issue.descRAW}}"/>
 </view>
