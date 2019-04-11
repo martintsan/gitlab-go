@@ -279,6 +279,14 @@ export default class IssuesPage extends BasePage {
     this.project = project
     this.noneDefaultProject = !this.project.id
     this.logined = this.checkLoginStatus()
+
+    if (this.filters.labels.length > 0) {
+      this.filters.labels.forEach((label) => {
+        this.project.labels[label].selected = true
+      })
+    }
+
+    this.$apply()
   }
 
   async onPullDownRefresh() {
