@@ -1,6 +1,7 @@
 const en = {
   "common-login": "Login",
   "common-no-more": "No more data",
+  "common-confirm": "Confirm",
 
   "login-welcome": "Welcome to GitLab Go",
   "login-tips": "According to GitLab API usage, you may need to provide private token to login. You can create as many personal access tokens as you like from your GitLab profile.",
@@ -26,6 +27,7 @@ const en = {
   "issues-none-issues": "There is no issues in the current project",
   "issues-created-at": "Created {date}",
   "issues-browse-project": "Browse Project",
+  "issues-label-filter": "Label Filter",
 
   "issue-detail-notes": "Comments",
   "issue-no-content": "No content",

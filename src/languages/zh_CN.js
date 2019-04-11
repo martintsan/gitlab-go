@@ -1,6 +1,7 @@
 const en = {
   "common-login": "立即登录",
   "common-no-more": "已经到底了",
+  "common-confirm": "确认",
 
   "login-welcome": "欢迎使用 GitLab Go",
   "login-tips": "根据 GitLab API 的使用方式，您可能需要提供 Private Token 来登录。你可以在你的资料页面来创建 Private Token。",
@@ -26,6 +27,7 @@ const en = {
   "issues-none-issues": "当前项目还没有创建问题",
   "issues-created-at": "{date}创建",
   "issues-browse-project": "浏览项目",
+  "issues-label-filter": "标签筛选",
 
   "issue-detail-notes": "问题评论",
   "issue-no-content": "没有内容",

@@ -37,6 +37,95 @@
     }
   }
 
+  .filters-wrapper {
+
+    .filters-bg {
+      position: fixed;
+      top: 128rpx;
+      left: 0;
+      z-index: 1;
+      opacity: 0.8;
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+      background-color: #e3e3e3;
+    }
+
+    .filters {
+      font-size: 28rpx;
+      display: flex;
+      flex-flow: column nowrap;
+      background-color: white;
+      box-shadow: 0 4rpx 10rpx -4rpx #cccccc;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 32rpx;
+      position: fixed;
+      top: 128rpx;
+      left: 0;
+      z-index: 10;
+
+      .filter-item {
+        padding: 32rpx 0;
+        display: flex;
+        flex-flow: column nowrap;
+
+        .top {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 20rpx;
+
+          .selected-count {
+            height: 40rpx;
+            border-radius: 20rpx;
+            background-color: #292961;
+            color: white;
+            font-size: 24rpx;
+            padding: 0 16rpx;
+            line-height: 40rpx;
+          }
+        }
+
+        .bottom {
+          .label-item {
+            height: 40rpx;
+            font-size: 24rpx;
+            line-height: 38rpx;
+            padding: 0 16rpx;
+            border: 1px solid #292961;
+            color: #292961;
+            display: inline-block;
+            border-radius: 20rpx;
+            margin-right: 10rpx;
+            margin-bottom: 10rpx;
+            line-height: 40rpx;
+
+            &.selected {
+              background-color: #292961;
+              color: white;
+            }
+          }
+        }
+      }
+
+      .buttons {
+        padding-bottom: 32rpx;
+
+        .confirm-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #292961;
+          height: 60rpx;
+          font-size: 28rpx;
+          color: #292961;
+        }
+      }
+    }
+  }
+
   .issues-list {
     padding: 0 32rpx;
     font-size: 28rpx;
@@ -88,7 +177,7 @@
     </view>
   </view>
   <view wx:else>
-    <view class="issues-filter">
+    <view class="issues-filter" @tap.stop="toggleFilters">
       <view class="issue-title">
         <view class="count">
           {{ lang.title }} <text wx:if="{{ issuesCount > 0 }}"> · {{ issuesCount }}</text>
@@ -96,6 +185,25 @@
         <view class="project-name">{{ project.name_with_namespace }}</view>
       </view>
       <image class="filter-image" src="/images/options.png"></image>
+    </view>
+    <view class="filters-wrapper" wx:if="{{ filtersOn }}" catchtouchmove="ture">
+      <view class="filters-bg" @tap.stop="toggleFilters"></view>
+      <view class="filters">
+        <view class="filter-item label-filter">
+          <view class="top">
+            {{ lang.labelFilter }}
+            <text class="selected-count" wx:if="{{ filters.labels.length > 0 }}">{{ filters.labels.length }}</text>
+          </view>
+          <view class="bottom">
+            <repeat for="{{ project.labels }}" key="labelIndex" index="labelIndex" item="label">
+              <view class="label-item {{ label.selected ? 'selected' : '' }}" @tap.stop="toggleLabel({{ label }})">{{ label.name }}</view>
+            </repeat>
+          </view>
+        </view>
+        <view class="buttons">
+          <button plain="true" class="confirm-button" @tap.stop="applyFilters">{{ lang.confirm }}</button>
+        </view>
+      </view>
     </view>
     <view wx:if="{{ issues.length === 0 }}">
       <view class="none-default-proj">{{ lang.noneIssues }}</view>
@@ -117,6 +225,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import * as _ from 'lodash'
 import moment from 'moment'
 import BasePage from './base'
 import { isEmpty, extend } from '../utils/validate'
@@ -132,6 +241,10 @@ export default class IssuesPage extends BasePage {
     noneDefaultProject: false,
     checkLoad: false,
     changedProject: false,
+    filtersOn: false,
+    filters: {
+      labels: []
+    },
     ...this.def
   }
 
@@ -149,6 +262,11 @@ export default class IssuesPage extends BasePage {
     this.project = wepy.getStorageSync('DEFAULT_PROJECT')
     this.noneDefaultProject = !this.project.id
     this.logined = this.checkLoginStatus()
+    this.extraParams = {
+      pid: this.project.id,
+      page: 1,
+      per_page: 50
+    }
     await this.fetchData()
     this.setLang()
     this.loaded()
@@ -166,6 +284,11 @@ export default class IssuesPage extends BasePage {
   async onPullDownRefresh() {
     this.issues = []
     this.issuesCount = 0
+    this.extraParams = {
+      pid: this.project.id,
+      page: 1,
+      per_page: 50
+    }
     await this.fetchData()
     wx.stopPullDownRefresh()
     this.loaded()
@@ -180,12 +303,6 @@ export default class IssuesPage extends BasePage {
 
   async fetchData() {
     if (this.logined && !this.noneDefaultProject) {
-      let issuesOptions = {
-        pid: this.project.id,
-        page: 1,
-        per_page: 50
-      }
-      this.extraParams = issuesOptions
       let issuesServiceFn = IssuesService.getProjectIssues.bind(IssuesService)
       let [issues, issuesCount] = await this.loadData(issuesServiceFn, this.extraParams, this.mapIssues, this, this.issues)
       this.issues = issues
@@ -214,6 +331,8 @@ export default class IssuesPage extends BasePage {
     this.lang.noMore = t('common-no-more')
     this.lang.browseProject = t('issues-browse-project')
     this.lang.title = t('issues-title')
+    this.lang.labelFilter = t('issues-label-filter')
+    this.lang.confirm = t('common-confirm')
     this.$apply()
   }
 
@@ -235,15 +354,41 @@ export default class IssuesPage extends BasePage {
       wepy.switchTab({
         url: 'index'
       })
-    }
-  }
-
-  events = {
-    'user-logined': async (user) => {
-      if (!isEmpty(user)) {
-        this.currentUser = user
-        this.loaded()
+    },
+    toggleFilters() {
+      if (this.checkLoginStatus()) {
+        this.filtersOn = !this.filtersOn
+        this.$apply()
       }
+    },
+    toggleLabel(label) {
+      let lb = this.project.labels[label.name]
+      if (!isEmpty(lb)) {
+        lb.selected = !lb.selected
+      }
+      this.filters.labels = _
+        .chain(this.project.labels)
+        .filter((item) => item.selected)
+        .map((item) => item.name)
+        .value()
+      this.$apply()
+    },
+    async applyFilters() {
+      this.filtersOn = false
+      this.issues = []
+      this.issuesCount = 0
+      this.extraParams = {
+        pid: this.project.id,
+        page: 1,
+        per_page: 50
+      }
+      if (this.filters.labels.length > 0) {
+        this.extraParams['labels'] = this.filters.labels.join(',')
+      } else {
+        delete this.extraParams.labels
+      }
+      await this.fetchData()
+      this.loaded()
     }
   }
 }

@@ -60,6 +60,7 @@
       border-radius: 20rpx;
       margin-left: 10rpx;
       margin-bottom: 10rpx;
+      line-height: 40rpx;
     }
   }
 
