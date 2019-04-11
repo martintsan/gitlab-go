@@ -280,7 +280,7 @@ export default class IssuesPage extends BasePage {
     this.noneDefaultProject = !this.project.id
     this.logined = this.checkLoginStatus()
 
-    if (this.filters.labels.length > 0) {
+    if (!this.changedProject && this.filters.labels.length > 0) {
       this.filters.labels.forEach((label) => {
         this.project.labels[label].selected = true
       })
@@ -300,6 +300,13 @@ export default class IssuesPage extends BasePage {
 
   async onTabItemTap(e) {
     if (this.checkLoad || this.changedProject) {
+      this.issues = []
+      this.issuesCount = 0
+      this.extraParams = {
+        pid: this.project.id,
+        page: 1,
+        per_page: 50
+      }
       await this.fetchData()
       this.loaded()
     }
