@@ -1,3 +1,5 @@
 # GitLab Go
 
-GitLab Client
+A free & awesome GitLab client (Wechat mini program)
+
+![wxqrcode](gitlabgo.jpg)
