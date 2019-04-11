@@ -110,7 +110,7 @@
     font-size: 24rpx;
     color: #707070;
     margin-top: 10rpx;
-    
+
     .h2w__main {
       margin: 0;
       font-size: 26rpx;
@@ -143,17 +143,6 @@
     <import src="../issues/towxml/entry.wxml"/>
     <template is="entry" data="{{...item.bodyRAW}}"/>
   </view>
-  <!-- <view class="author">
-    <image class="avatar-image" src="{{ item.author.avatar_url }}"></image>
-    <view class="info">
-      <view class="author-name">{{ item.author.name }} <text class="username">@{{ item.author.username }}</text></view>
-      <view class="comment-body" wx:if="{{ item.bodyRAW }}">
-        <import src="../issues/towxml/entry.wxml"/>
-        <template is="entry" data="{{...item.bodyRAW}}"/>
-      </view>
-      <view class="updated_at">{{ item.updated }}</view>
-    </view>
-  </view> -->
 </view>
 </template>
 <script>
