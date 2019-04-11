@@ -284,11 +284,7 @@ export default class IssuesPage extends BasePage {
   async onPullDownRefresh() {
     this.issues = []
     this.issuesCount = 0
-    this.extraParams = {
-      pid: this.project.id,
-      page: 1,
-      per_page: 50
-    }
+    this.extraParams['page'] = 1
     await this.fetchData()
     wx.stopPullDownRefresh()
     this.loaded()
